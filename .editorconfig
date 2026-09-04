@@ -1,18 +1,32 @@
 root = true
 
-[*]
-charset = utf-8
-end_of_line = lf
-indent_size = 4
+# For backend PHP
+[*.php]
 indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
+indent_size = 4
 
+# For frontend resources
+[*.{js,jsx,css,sass,less,json,vue,jsx}]
+indent_style = space
+indent_size = 2
+
+# For Markdown files
 [*.md]
 trim_trailing_whitespace = false
 
+# For YAML files
 [*.{yml,yaml}]
 indent_size = 2
 
+# For Docker Compose files
 [{compose,docker-compose}.{yml,yaml}]
 indent_size = 4
+
+# For other files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true

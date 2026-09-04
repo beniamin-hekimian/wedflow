@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Template;
 
 class TemplateSeeder extends Seeder
 {
@@ -12,6 +13,15 @@ class TemplateSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Template::updateOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'Classic',
+                'slug' => 'classic',
+                'description' => 'An elegant classic wedding invitation template',
+                'thumbnail_path' => 'templates-assets/classic/thumbnail.jpeg',
+                'intro_video_path' => 'templates-assets/classic/intro.mp4',
+            ]
+        );
     }
 }
