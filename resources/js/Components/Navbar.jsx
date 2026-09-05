@@ -29,6 +29,14 @@ export default function Navbar() {
     },
   ];
 
+  const adminLinks = [
+    {
+      name: 'Dashboard',
+      href: route('admin.dashboard'),
+      active: route().current('admin.dashboard'),
+    },
+  ];
+
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -54,6 +62,21 @@ export default function Navbar() {
 
             {user &&
               authedLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition ${
+                    link.active
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+
+            {user?.role === 'admin' &&
+              adminLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
@@ -144,6 +167,21 @@ export default function Navbar() {
 
           {user &&
             authedLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`block rounded-md px-3 py-2 text-sm font-medium transition ${
+                  link.active
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+
+          {user?.role === 'admin' &&
+            adminLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('contact_phone')->nullable();
             $table->text('note')->nullable();
 
-            $table->enum('status', ['draft', 'pending', 'active', 'inactive'])->default('draft');
+            $table->enum('status', ['pending', 'active', 'inactive'])->default('pending');
             $table->timestamp('paid_at')->nullable();
 
             $table->timestamps();

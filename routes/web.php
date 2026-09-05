@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InvitationController as AdminInvitationController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MelodyController;
 use App\Http\Controllers\ProfileController;
@@ -27,6 +29,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/invitations', [AdminInvitationController::class, 'index'])->name('invitations.index');
+    Route::patch('/invitations/{invitation}/status', [AdminInvitationController::class, 'updateStatus'])->name('invitations.status');
+});
 
 Route::get('/invitations/create', [InvitationController::class, 'create'])
     ->middleware('auth')

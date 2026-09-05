@@ -13,14 +13,12 @@ import {
 } from "@/components/ui/card";
 
 const statusVariant = {
-  draft: "secondary",
   pending: "outline",
   active: "default",
   inactive: "destructive",
 };
 
 const statusLabel = {
-  draft: "Draft",
   pending: "Pending",
   active: "Active",
   inactive: "Inactive",
