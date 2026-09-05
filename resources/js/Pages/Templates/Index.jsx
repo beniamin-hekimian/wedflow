@@ -1,5 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
+
 import Navbar from "@/Components/Navbar";
+import { Button } from "@/components/ui/button";
 
 export default function TemplatesIndex({ templates }) {
   return (
@@ -45,9 +47,10 @@ export default function TemplatesIndex({ templates }) {
                     href={route("invitations.create", {
                       template: template.id,
                     })}
-                    className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary px-2.5 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/80"
                   >
-                    Prepare your invitation with this template
+                    <Button className="mt-4 w-full">
+                      Prepare your invitation with this template
+                    </Button>
                   </Link>
                 </div>
               </div>
