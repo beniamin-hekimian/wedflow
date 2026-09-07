@@ -58,13 +58,8 @@ class Invitation extends Model
         return $this->hasMany(Photo::class);
     }
 
-    public function rsvps(): HasMany
+    public function responses(): HasMany
     {
-        return $this->hasMany(Rsvp::class);
-    }
-
-    public function wishes(): HasMany
-    {
-        return $this->hasMany(Wish::class);
+        return $this->hasMany(Response::class);
     }
 }

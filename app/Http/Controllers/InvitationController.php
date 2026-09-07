@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invitation;
 use App\Models\Melody;
 use App\Models\Photo;
+use App\Models\Response;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -146,6 +147,64 @@ class InvitationController extends Controller
         $invitation->delete();
 
         return to_route('invitations.index')->with('success', 'Invitation deleted successfully.');
+    }
+
+    public function responses(Request $request, Invitation $invitation)
+    {
+        $this->authorizeOwnership($invitation);
+
+        $sortable = ['guest_name', 'is_attending', 'count', 'message', 'is_hidden', 'created_at'];
+
+        $sort = $request->query('sort', 'created_at');
+        if (! in_array($sort, $sortable, true)) {
+            $sort = 'created_at';
+        }
+
+        $direction = $request->query('direction', 'desc');
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'desc';
+        }
+
+        $rows = $invitation->responses()
+            ->orderBy($sort, $direction)
+            ->orderBy('id', $direction)
+            ->paginate(20)
+            ->withQueryString();
+
+        $summary = [
+            'total' => $invitation->responses()->count(),
+            'attending' => $invitation->responses()->where('is_attending', true)->count(),
+            'declined' => $invitation->responses()->where('is_attending', false)->count(),
+            'confirmed_guests' => (int) $invitation->responses()->where('is_attending', true)->sum('count'),
+            'wishes' => $invitation->responses()->whereNotNull('message')->count(),
+        ];
+
+        return Inertia::render('Invitations/Responses', [
+            'invitation' => $invitation->load(['template', 'melody']),
+            'rows' => $rows,
+            'summary' => $summary,
+            'filters' => [
+                'sort' => $sort,
+                'direction' => $direction,
+            ],
+        ]);
+    }
+
+    public function toggleVisibility(Invitation $invitation, Response $response)
+    {
+        $this->authorizeOwnership($invitation);
+
+        abort_unless($response->invitation_id === $invitation->id, 404);
+
+        $response->is_hidden = ! $response->is_hidden;
+        $response->save();
+
+        return back()->with(
+            'success',
+            $response->is_hidden
+                ? 'Wish hidden from guests.'
+                : 'Wish is now visible to guests.',
+        );
     }
 
     private function authorizeOwnership(Invitation $invitation): void

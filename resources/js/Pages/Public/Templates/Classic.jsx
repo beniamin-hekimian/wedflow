@@ -2,6 +2,7 @@ import { Head, Link } from "@inertiajs/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Music, Pause } from "lucide-react";
 
+import RsvpCard from "../Components/RsvpCard";
 import "../../../../css/invitations/classic.css";
 
 const INTRO_FADE_MS = 1200;
@@ -181,7 +182,7 @@ const formatTime = (value) => {
   return `${display}:${minute} ${suffix}`;
 };
 
-export default function Classic({ invitation }) {
+export default function Classic({ invitation, wishes = [] }) {
   const { template, melody, events = [], photos = [] } = invitation;
 
   const introSrc = template?.intro_video_path ? `/${template.intro_video_path}` : null;
@@ -247,6 +248,10 @@ export default function Classic({ invitation }) {
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venueAddress)}`
     : null;
   const hasContact = Boolean(invitation.contact_phone);
+
+  const embedMapSrc = venueAddress
+    ? `https://maps.google.com/maps?q=${encodeURIComponent(venueAddress)}&output=embed&z=15`
+    : null;
 
   return (
     <>
@@ -360,14 +365,18 @@ export default function Classic({ invitation }) {
                   {mdashFix(invitation.venue_name)}
                 </h2>
                 <p className="card__address">{venueAddress}</p>
-                <a
-                  className="map-link"
-                  href={mapHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on Google Maps
-                </a>
+                {embedMapSrc && (
+                  <div className="map-frame">
+                    <iframe
+                      className="map-frame__iframe"
+                      title={`Map showing ${mdashFix(invitation.venue_name)}`}
+                      loading="lazy"
+                      src={embedMapSrc}
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
               </section>
             </Reveal>
           )}
@@ -424,13 +433,7 @@ export default function Classic({ invitation }) {
           )}
 
           <Reveal>
-            <section className="card rsvp-card">
-              <p className="card__eyebrow">Kindly reply</p>
-              <h2 className="serif-display rsvp-card__title">RSVP</h2>
-              <p className="card__text">
-                The online RSVP form will be available here shortly.
-              </p>
-            </section>
+            <RsvpCard invitation={invitation} wishes={wishes} />
           </Reveal>
 
           <Reveal>

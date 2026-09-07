@@ -28,7 +28,7 @@ export default function Edit({ invitation, template, melodies = [] }) {
 
   const submit = (event) => {
     event.preventDefault();
-    form.put(route("invitations.update", invitation.id), {
+    form.put(route("invitations.update", invitation.slug), {
       preserveScroll: true,
     });
   };

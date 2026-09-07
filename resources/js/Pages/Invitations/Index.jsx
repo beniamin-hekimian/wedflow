@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Head, Link, router } from "@inertiajs/react";
-import { CalendarDays, Check, Copy, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Check, Copy, MapPin, Pencil, Plus, Trash2, Users } from "lucide-react";
 
 import Modal from "@/Components/Modal";
 import Navbar from "@/Components/Navbar";
@@ -49,7 +49,7 @@ export default function Index({ invitations = [] }) {
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
-    router.delete(route("invitations.destroy", deleteTarget.id), {
+    router.delete(route("invitations.destroy", deleteTarget.slug), {
       preserveScroll: true,
     });
     setDeleteTarget(null);
@@ -152,7 +152,12 @@ export default function Index({ invitations = [] }) {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <Link href={route("invitations.edit", invitation.id)}>
+                          <Link href={route("invitations.responses", invitation.slug)}>
+                            <Button variant="secondary" size="sm">
+                              <Users /> Responses
+                            </Button>
+                          </Link>
+                          <Link href={route("invitations.edit", invitation.slug)}>
                             <Button variant="outline" size="sm">
                               <Pencil /> Edit
                             </Button>

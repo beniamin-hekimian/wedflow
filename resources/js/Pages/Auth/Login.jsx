@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -6,7 +7,9 @@ import TextInput from '@/Components/TextInput';
 import Navbar from '@/Components/Navbar';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status }) {
+  const passwordRef = useRef(null);
+
   const { data, setData, post, processing, errors, reset } = useForm({
     email: '',
     password: '',
@@ -53,6 +56,12 @@ export default function Login({ status, canResetPassword }) {
                 autoComplete="username"
                 isFocused={true}
                 onChange={(e) => setData('email', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    passwordRef.current?.focus();
+                  }
+                }}
               />
 
               <InputError message={errors.email} className="mt-2" />
@@ -68,6 +77,7 @@ export default function Login({ status, canResetPassword }) {
                 value={data.password}
                 className="mt-1 block w-full"
                 autoComplete="current-password"
+                ref={passwordRef}
                 onChange={(e) => setData('password', e.target.value)}
               />
 
@@ -86,14 +96,12 @@ export default function Login({ status, canResetPassword }) {
             </div>
 
             <div className="mt-4 flex items-center justify-end">
-              {canResetPassword && (
-                <Link
-                  href={route('password.request')}
-                  className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Forgot your password?
-                </Link>
-              )}
+              <Link
+                href={route('register')}
+                className="rounded-md text-sm text-gray-600 underline transition hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                Don't have an account?
+              </Link>
 
               <PrimaryButton className="ms-4" disabled={processing}>
                 Log in

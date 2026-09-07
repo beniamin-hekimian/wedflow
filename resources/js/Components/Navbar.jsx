@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { User } from 'lucide-react';
 
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ export default function Navbar() {
     },
   ];
 
-  const authedLinks = [
+  const invitationLinks = [
     {
       name: 'Invitations',
       href: route('invitations.index'),
@@ -60,20 +61,19 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {user &&
-              authedLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`rounded-md px-3 py-2 text-sm font-medium transition ${
-                    link.active
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {invitationLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`rounded-md px-3 py-2 text-sm font-medium transition ${
+                  link.active
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
 
             {user?.role === 'admin' &&
               adminLinks.map((link) => (
@@ -96,12 +96,16 @@ export default function Navbar() {
           {user ? (
             <>
               <Link href={route('profile.edit')}>
-                <Button variant="ghost" size="sm">
-                  Profile
+                <Button variant="ghost" size="icon" aria-label="Profile">
+                  <User className="size-5" />
                 </Button>
               </Link>
               <Link href={route('logout')} method="post">
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                >
                   Log Out
                 </Button>
               </Link>
@@ -165,8 +169,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {user &&
-            authedLinks.map((link) => (
+          {invitationLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
@@ -199,12 +202,21 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link href={route('profile.edit')}>
-                  <Button variant="ghost" size="sm" className="w-full justify-start">
-                    Profile
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    aria-label="Profile"
+                  >
+                    <User className="size-5" />
                   </Button>
                 </Link>
                 <Link href={route('logout')} method="post" className="mt-2 block">
-                  <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-destructive hover:text-destructive"
+                  >
                     Log Out
                   </Button>
                 </Link>

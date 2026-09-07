@@ -11,6 +11,26 @@ class PublicInvitationController extends Controller
 {
     public function __invoke(string $slug)
     {
+        [$component, $invitation] = $this->resolve($slug);
+
+        return Inertia::render($component, [
+            'invitation' => $invitation,
+            'wishes' => $this->visibleWishes($invitation),
+        ]);
+    }
+
+    public function render(string $slug, array $extra = [])
+    {
+        [$component, $invitation] = $this->resolve($slug);
+
+        return Inertia::render($component, array_merge([
+            'invitation' => $invitation,
+            'wishes' => $this->visibleWishes($invitation),
+        ], $extra));
+    }
+
+    private function resolve(string $slug): array
+    {
         $invitation = Invitation::with([
             'template',
             'melody',
@@ -27,8 +47,16 @@ class PublicInvitationController extends Controller
             abort(404);
         }
 
-        return Inertia::render($component, [
-            'invitation' => $invitation,
-        ]);
+        return [$component, $invitation];
+    }
+
+    private function visibleWishes(Invitation $invitation)
+    {
+        return $invitation->responses()
+            ->whereNotNull('message')
+            ->where('is_hidden', false)
+            ->orderByDesc('created_at')
+            ->select(['id', 'guest_name', 'message', 'created_at'])
+            ->get();
     }
 }

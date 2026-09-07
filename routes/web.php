@@ -6,6 +6,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MelodyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicInvitationController;
+use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invitations', [InvitationController::class, 'index'])->name('invitations.index');
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
-    Route::get('/invitations/{invitation}/edit', [InvitationController::class, 'edit'])->name('invitations.edit');
-    Route::put('/invitations/{invitation}', [InvitationController::class, 'update'])->name('invitations.update');
-    Route::delete('/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
+    Route::get('/invitations/{invitation:slug}/edit', [InvitationController::class, 'edit'])->name('invitations.edit');
+    Route::put('/invitations/{invitation:slug}', [InvitationController::class, 'update'])->name('invitations.update');
+    Route::delete('/invitations/{invitation:slug}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
+    Route::get('/invitations/{invitation:slug}/responses', [InvitationController::class, 'responses'])->name('invitations.responses');
+    Route::patch('/invitations/{invitation:slug}/responses/{response}/visibility', [InvitationController::class, 'toggleVisibility'])->name('invitations.responses.visibility');
 });
 
 Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
@@ -46,5 +49,7 @@ Route::get('/invitations/create', [InvitationController::class, 'create'])
     ->name('invitations.create');
 
 require __DIR__ . '/auth.php';
+
+Route::post('/{slug}/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
 
 Route::get('/{slug}', PublicInvitationController::class)->name('invitations.show');
