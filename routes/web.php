@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\InvitationController as AdminInvitationController
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MelodyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicInvitationController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invitations', [InvitationController::class, 'index'])->name('invitations.index');
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+    Route::get('/invitations/{invitation}/edit', [InvitationController::class, 'edit'])->name('invitations.edit');
+    Route::put('/invitations/{invitation}', [InvitationController::class, 'update'])->name('invitations.update');
+    Route::delete('/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
 });
 
 Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
@@ -42,3 +46,5 @@ Route::get('/invitations/create', [InvitationController::class, 'create'])
     ->name('invitations.create');
 
 require __DIR__ . '/auth.php';
+
+Route::get('/{slug}', PublicInvitationController::class)->name('invitations.show');

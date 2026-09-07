@@ -3,31 +3,39 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import Navbar from "@/Components/Navbar";
 import InvitationForm, { EMPTY_EVENT } from "@/Pages/Invitations/InvitationForm";
 
-export default function Create({ template, melodies = [] }) {
+export default function Edit({ invitation, template, melodies = [] }) {
   const form = useForm({
-    template_id: template.id,
-    melody_id: "",
-    groom_name: "",
-    bride_name: "",
-    event_date: "",
-    event_time: "",
-    venue_name: "",
-    venue_address: "",
-    contact_phone: "",
-    note: "",
-    events: [EMPTY_EVENT, EMPTY_EVENT],
+    template_id: invitation.template_id,
+    melody_id: invitation.melody_id ? String(invitation.melody_id) : "",
+    groom_name: invitation.groom_name,
+    bride_name: invitation.bride_name,
+    event_date: invitation.event_date ? invitation.event_date.slice(0, 10) : "",
+    event_time: invitation.event_time ? invitation.event_time.slice(0, 5) : "",
+    venue_name: invitation.venue_name,
+    venue_address: invitation.venue_address,
+    contact_phone: invitation.contact_phone ?? "",
+    note: invitation.note ?? "",
+    events:
+      (invitation.events ?? []).length > 0
+        ? invitation.events.map((event) => ({
+            name: event.name,
+            time: event.time,
+          }))
+        : [EMPTY_EVENT, EMPTY_EVENT],
     photos: [],
-    existing_photo_ids: [],
+    existing_photo_ids: (invitation.photos ?? []).map((photo) => photo.id),
   });
 
   const submit = (event) => {
     event.preventDefault();
-    form.post(route("invitations.store"), { preserveScroll: true });
+    form.put(route("invitations.update", invitation.id), {
+      preserveScroll: true,
+    });
   };
 
   return (
     <>
-      <Head title="Create Invitation" />
+      <Head title="Edit Invitation" />
 
       <div className="flex min-h-screen flex-col bg-gray-50">
         <Navbar />
@@ -43,17 +51,19 @@ export default function Create({ template, melodies = [] }) {
                 />
                 <div>
                   <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Create Invitation
+                    Edit Invitation
                   </h2>
-                  <p className="text-sm text-gray-600">{template.name}</p>
+                  <p className="text-sm text-gray-600">
+                    {invitation.groom_name} & {invitation.bride_name}
+                  </p>
                 </div>
               </div>
 
               <Link
-                href={route("templates.index")}
+                href={route("invitations.index")}
                 className="text-sm text-gray-500 transition hover:text-gray-700"
               >
-                &larr; Back to templates
+                &larr; Back to invitations
               </Link>
             </div>
 
@@ -61,7 +71,8 @@ export default function Create({ template, melodies = [] }) {
               form={form}
               template={template}
               melodies={melodies}
-              submitLabel="Create Invitation"
+              existingPhotos={invitation.photos ?? []}
+              submitLabel="Save Changes"
               onSubmit={submit}
             />
           </div>

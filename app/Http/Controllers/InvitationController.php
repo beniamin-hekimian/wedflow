@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Invitation;
 use App\Models\Melody;
+use App\Models\Photo;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Throwable;
 
@@ -39,27 +41,7 @@ class InvitationController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'template_id' => ['required', 'exists:templates,id'],
-            'melody_id' => ['required', 'exists:melodies,id'],
-            'groom_name' => ['required', 'string', 'max:255'],
-            'bride_name' => ['required', 'string', 'max:255'],
-            'groom_parents' => ['required', 'string', 'max:255'],
-            'bride_parents' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date'],
-            'event_time' => ['required'],
-            'venue_name' => ['required', 'string', 'max:255'],
-            'venue_address' => ['required', 'string'],
-            'welcome_message' => ['nullable', 'string'],
-            'contact_name' => ['nullable', 'string', 'max:255'],
-            'contact_phone' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string'],
-            'events' => ['required', 'array', 'min:2', 'max:4'],
-            'events.*.name' => ['required', 'string', 'max:255'],
-            'events.*.time' => ['required', 'date_format:H:i'],
-            'photos' => ['nullable', 'array', 'max:5'],
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-        ]);
+        $validated = $request->validate($this->rules());
 
         $photoPaths = [];
 
@@ -107,28 +89,170 @@ class InvitationController extends Controller
         return to_route('invitations.index')->with('success', 'Invitation created successfully.');
     }
 
+    public function edit(Invitation $invitation)
+    {
+        $this->authorizeOwnership($invitation);
+
+        return Inertia::render('Invitations/Edit', [
+            'invitation' => $invitation->load(['template', 'melody', 'events', 'photos']),
+            'template' => $invitation->template,
+            'melodies' => Melody::all(),
+        ]);
+    }
+
+    public function update(Request $request, Invitation $invitation)
+    {
+        $this->authorizeOwnership($invitation);
+
+        $validated = $request->validate($this->rules());
+
+        $photoPaths = [];
+
+        try {
+            DB::transaction(function () use ($validated, $request, $invitation, &$photoPaths) {
+                $invitation->forceFill($this->editableFields($validated))->save();
+
+                $invitation->events()->delete();
+                $invitation->events()->createMany(
+                    collect($validated['events'])
+                        ->values()
+                        ->map(fn ($event, $index) => [
+                            'name' => $event['name'],
+                            'time' => $event['time'],
+                            'position' => $index,
+                        ])
+                        ->all(),
+                );
+
+                $this->syncPhotos($request, $validated, $invitation, $photoPaths);
+            });
+        } catch (Throwable $e) {
+            foreach ($photoPaths as $path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            throw $e;
+        }
+
+        return to_route('invitations.index')->with('success', 'Invitation updated successfully.');
+    }
+
+    public function destroy(Invitation $invitation)
+    {
+        $this->authorizeOwnership($invitation);
+
+        Storage::disk('public')->deleteDirectory("invitations/{$invitation->id}");
+
+        $invitation->delete();
+
+        return to_route('invitations.index')->with('success', 'Invitation deleted successfully.');
+    }
+
+    private function authorizeOwnership(Invitation $invitation): void
+    {
+        abort_unless($invitation->user_id === Auth::id(), 403);
+    }
+
+    private function rules(): array
+    {
+        return [
+            'template_id' => ['required', 'exists:templates,id'],
+            'melody_id' => ['required', 'exists:melodies,id'],
+            'groom_name' => ['required', 'string', 'max:255'],
+            'bride_name' => ['required', 'string', 'max:255'],
+            'event_date' => ['required', 'date'],
+            'event_time' => ['required'],
+            'venue_name' => ['required', 'string', 'max:255'],
+            'venue_address' => ['required', 'string'],
+            'contact_phone' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string'],
+            'events' => ['required', 'array', 'min:2', 'max:4'],
+            'events.*.name' => ['required', 'string', 'max:255'],
+            'events.*.time' => ['required', 'date_format:H:i'],
+            'existing_photo_ids' => ['nullable', 'array'],
+            'existing_photo_ids.*' => ['integer'],
+            'photos' => ['nullable', 'array', 'max:5'],
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ];
+    }
+
+    private function editableFields(array $validated): array
+    {
+        return [
+            'template_id' => $validated['template_id'],
+            'melody_id' => $validated['melody_id'],
+            'groom_name' => $validated['groom_name'],
+            'bride_name' => $validated['bride_name'],
+            'event_date' => $validated['event_date'],
+            'event_time' => $validated['event_time'],
+            'venue_name' => $validated['venue_name'],
+            'venue_address' => $validated['venue_address'],
+            'contact_phone' => $validated['contact_phone'] ?? null,
+            'note' => $validated['note'] ?? null,
+        ];
+    }
+
+    private function syncPhotos(Request $request, array $validated, Invitation $invitation, array &$photoPaths): void
+    {
+        $keptIds = array_map('intval', $validated['existing_photo_ids'] ?? []);
+        $existingCount = count($keptIds);
+        $newCount = count($request->file('photos', []));
+
+        if ($existingCount + $newCount > 5) {
+            throw ValidationException::withMessages([
+                'photos' => 'You may have up to 5 photos in total.',
+            ]);
+        }
+
+        if ($existingCount > 0 && $existingCount !== $invitation->photos()->whereIn('id', $keptIds)->count()) {
+            throw ValidationException::withMessages([
+                'photos' => 'One or more photos no longer belong to this invitation.',
+            ]);
+        }
+
+        $removed = $invitation->photos()->whereNotIn('id', $keptIds)->get();
+
+        foreach ($removed as $photo) {
+            $photo->delete();
+        }
+
+        foreach ($invitation->photos()->whereIn('id', $keptIds)->orderBy('id')->get() as $photo) {
+            $photo->update(['position' => array_search($photo->id, $keptIds, true)]);
+        }
+
+        $removedPaths = $removed->pluck('photo_path')->all();
+
+        if ($removedPaths) {
+            Storage::disk('public')->delete($removedPaths);
+        }
+
+        $position = count($keptIds);
+
+        foreach ($request->file('photos', []) as $photo) {
+            $path = $photo->store("invitations/{$invitation->id}", 'public');
+            $photoPaths[] = $path;
+            $invitation->photos()->create([
+                'photo_path' => $path,
+                'position' => $position++,
+            ]);
+        }
+    }
+
     private function generateUniqueSlug(string $groom, string $bride): string
     {
-        $groomSlug = Str::slug($groom) ?: 'invitation';
-        $brideSlug = Str::slug($bride) ?: 'invitation';
+        $groomSlug = Str::slug(strtok(trim($groom), ' ') ?: $groom) ?: 'invitation';
+        $brideSlug = Str::slug(strtok(trim($bride), ' ') ?: $bride) ?: 'invitation';
 
-        $candidates = [
-            "{$groomSlug}-{$brideSlug}",
-            "{$groomSlug}-&-{$brideSlug}",
-            "{$groomSlug}-and-{$brideSlug}",
-            "{$groomSlug}-with-{$brideSlug}",
-        ];
+        $base = "{$groomSlug}-{$brideSlug}";
 
-        foreach ($candidates as $candidate) {
-            if (Invitation::where('slug', $candidate)->doesntExist()) {
-                return $candidate;
-            }
+        if (Invitation::where('slug', $base)->doesntExist()) {
+            return $base;
         }
 
         $n = 2;
 
         do {
-            $candidate = "{$groomSlug}-{$brideSlug}-{$n}";
+            $candidate = "{$base}-{$n}";
             $n++;
         } while (Invitation::where('slug', $candidate)->exists());
 

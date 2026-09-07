@@ -51,8 +51,6 @@ class AdminInvitationTest extends TestCase
             'slug' => 'invitation-' . Str::uuid(),
             'groom_name' => 'John',
             'bride_name' => 'Jane',
-            'groom_parents' => 'Smith family',
-            'bride_parents' => 'Doe family',
             'event_date' => now()->addMonths(2)->toDateString(),
             'event_time' => '18:00',
             'venue_name' => 'Grand Hall',

@@ -21,16 +21,12 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('groom_name');
             $table->string('bride_name');
-            $table->string('groom_parents');
-            $table->string('bride_parents');
 
             $table->date('event_date');
             $table->time('event_time');
             $table->string('venue_name');
             $table->text('venue_address');
 
-            $table->text('welcome_message')->nullable();
-            $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
             $table->text('note')->nullable();
 

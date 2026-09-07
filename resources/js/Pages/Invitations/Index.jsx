@@ -1,6 +1,8 @@
-import { Head, Link } from "@inertiajs/react";
-import { CalendarDays, Plus } from "lucide-react";
+import { useState } from "react";
+import { Head, Link, router } from "@inertiajs/react";
+import { CalendarDays, Check, Copy, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
 
+import Modal from "@/Components/Modal";
 import Navbar from "@/Components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,11 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-const statusVariant = {
-  pending: "outline",
-  active: "default",
-  inactive: "destructive",
+const statusDotClass = {
+  pending: "bg-yellow-500",
+  active: "bg-emerald-500",
+  inactive: "bg-red-500",
 };
 
 const statusLabel = {
@@ -34,6 +37,24 @@ const formatDate = (value) => {
 };
 
 export default function Index({ invitations = [] }) {
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [copiedId, setCopiedId] = useState(null);
+
+  const copyLink = (invitation) => {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(`${window.location.origin}/${invitation.slug}`);
+    setCopiedId(invitation.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(route("invitations.destroy", deleteTarget.id), {
+      preserveScroll: true,
+    });
+    setDeleteTarget(null);
+  };
+
   return (
     <>
       <Head title="My Invitations" />
@@ -78,23 +99,74 @@ export default function Index({ invitations = [] }) {
                           className="h-16 w-12 rounded-md object-cover ring-1 ring-gray-200"
                         />
                         <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {invitation.groom_name} & {invitation.bride_name}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {invitation.template?.name}
-                          </p>
+                          <div className="flex items-center gap-1.5">
+                            <Link
+                              href={`/${invitation.slug}`}
+                              className="font-bold text-gray-900 transition hover:text-blue-600"
+                            >
+                              {invitation.groom_name} & {invitation.bride_name}
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => copyLink(invitation)}
+                              className="text-gray-400 transition hover:text-gray-600"
+                              aria-label="Copy invitation link"
+                            >
+                              {copiedId === invitation.id ? (
+                                <Check className="size-4 text-emerald-500" />
+                              ) : (
+                                <Copy className="size-4" />
+                              )}
+                            </button>
+                          </div>
+                          <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                            <span className="flex items-center gap-1">
+                              <CalendarDays className="size-4" />
+                              {formatDate(invitation.event_date)}
+                            </span>
+                            <span>·</span>
+                            <span className="flex min-w-0 items-center gap-1">
+                              <MapPin className="size-4 shrink-0" />
+                              <span className="truncate">
+                                {invitation.venue_name || "—"}
+                              </span>
+                            </span>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <CalendarDays className="size-4" />
-                        {formatDate(invitation.event_date)}
-                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge
+                            variant="outline"
+                            className="rounded-full"
+                          >
+                            <span
+                              className={cn(
+                                "size-2 shrink-0 rounded-full",
+                                statusDotClass[invitation.status],
+                              )}
+                            />
+                            {statusLabel[invitation.status]}
+                          </Badge>
+                        </div>
 
-                      <Badge variant={statusVariant[invitation.status]}>
-                        {statusLabel[invitation.status]}
-                      </Badge>
+                        <div className="flex items-center gap-2">
+                          <Link href={route("invitations.edit", invitation.id)}>
+                            <Button variant="outline" size="sm">
+                              <Pencil /> Edit
+                            </Button>
+                          </Link>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => setDeleteTarget(invitation)}
+                          >
+                            <Trash2 /> Delete
+                          </Button>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -103,6 +175,30 @@ export default function Index({ invitations = [] }) {
           </div>
         </main>
       </div>
+
+      <Modal
+        show={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        maxWidth="sm"
+      >
+        <div className="p-6">
+          <h3 className="text-lg font-medium text-gray-900">Delete invitation?</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Are you sure you want to delete the invitation for{" "}
+            {deleteTarget?.groom_name} & {deleteTarget?.bride_name}? This action
+            cannot be undone.
+          </p>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }
