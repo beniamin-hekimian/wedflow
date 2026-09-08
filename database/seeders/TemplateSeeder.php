@@ -23,5 +23,16 @@ class TemplateSeeder extends Seeder
                 'intro_video_path' => 'templates-assets/classic/intro.mp4',
             ]
         );
+
+        Template::updateOrCreate(
+            ['id' => 2],
+            [
+                'name' => 'Royal',
+                'slug' => 'royal',
+                'description' => 'A luxurious royal wedding invitation template',
+                'thumbnail_path' => 'templates-assets/royal/thumbnail.jpeg',
+                'intro_video_path' => 'templates-assets/royal/intro.mp4',
+            ]
+        );
     }
 }

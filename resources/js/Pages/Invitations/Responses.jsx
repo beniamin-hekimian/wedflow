@@ -1,16 +1,9 @@
 import { Head, Link, router } from '@inertiajs/react';
-import {
-  ArrowLeft,
-  CalendarDays,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  Users,
-} from 'lucide-react';
+import { ArrowLeft, CalendarDays, Eye, EyeOff, Users } from 'lucide-react';
 
 import Navbar from '@/Components/Navbar';
 import Pagination from '@/Components/Pagination';
+import SortableTh from '@/Components/SortableTh';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -41,31 +34,6 @@ const columns = [
   { key: 'is_hidden', label: 'Hidden' },
   { key: 'created_at', label: 'Submitted' },
 ];
-
-function SortableHeader({ column, sort, direction, onSort }) {
-  const active = sort === column.key;
-
-  return (
-    <th className="px-6 py-3 text-left">
-      <button
-        type="button"
-        onClick={() => onSort(column.key)}
-        className={cn(
-          'inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wider transition hover:text-gray-900',
-          active ? 'text-gray-900' : 'text-gray-500',
-        )}
-      >
-        {column.label}
-        {active &&
-          (direction === 'asc' ? (
-            <ChevronUp className="size-3" />
-          ) : (
-            <ChevronDown className="size-3" />
-          ))}
-      </button>
-    </th>
-  );
-}
 
 export default function Responses({
   invitation,
@@ -170,7 +138,7 @@ export default function Responses({
                       <thead className="bg-gray-50">
                         <tr>
                           {columns.map((column) => (
-                            <SortableHeader
+                            <SortableTh
                               key={column.key}
                               column={column}
                               sort={sort}

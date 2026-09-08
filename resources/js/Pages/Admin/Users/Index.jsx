@@ -1,10 +1,11 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Search, X } from "lucide-react";
+import { Mail, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Pagination from "@/Components/Pagination";
 import SortableTh from "@/Components/SortableTh";
 import AdminLayout from "@/Layouts/AdminLayout";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,18 +18,11 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-const STATUSES = ["pending", "active", "inactive"];
+const ROLES = ["admin", "customer"];
 
-const STATUS_ITEMS = {
-  pending: "Pending",
-  active: "Active",
-  inactive: "Inactive",
-};
-
-const statusDotClass = {
-  pending: "bg-yellow-500",
-  active: "bg-emerald-500",
-  inactive: "bg-red-500",
+const ROLE_ITEMS = {
+  admin: "Admin",
+  customer: "Customer",
 };
 
 const formatDate = (value) => {
@@ -41,26 +35,30 @@ const formatDate = (value) => {
 };
 
 const columns = [
-  { key: "groom_name", label: "Couple" },
-  { key: "owner_name", label: "Owner" },
-  { key: "template_name", label: "Template" },
-  { key: "event_date", label: "Event" },
-  { key: "status", label: "Status" },
-  { key: "created_at", label: "Created" },
+  { key: "name", label: "User" },
+  { key: "email", label: "Email" },
+  { key: "role", label: "Role" },
+  { key: "invitations_count", label: "Invitations" },
+  { key: "email_verified_at", label: "Verified" },
+  { key: "created_at", label: "Joined" },
 ];
 
-export default function Index({ invitations, filters, statusCounts }) {
+export default function Index({ users, filters, roleCounts }) {
   const [search, setSearch] = useState(filters.search ?? "");
-  const hasFilters = Boolean(filters.status) || Boolean(filters.search);
+  const hasFilters =
+    Boolean(filters.role) ||
+    Boolean(filters.verified) ||
+    Boolean(filters.search);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (search === filters.search) return;
 
       router.get(
-        route("admin.invitations.index"),
+        route("admin.users.index"),
         {
-          ...(filters.status ? { status: filters.status } : {}),
+          ...(filters.role ? { role: filters.role } : {}),
+          ...(filters.verified ? { verified: filters.verified } : {}),
           ...(filters.sort ? { sort: filters.sort } : {}),
           ...(filters.direction ? { direction: filters.direction } : {}),
           ...(search ? { search } : {}),
@@ -68,7 +66,7 @@ export default function Index({ invitations, filters, statusCounts }) {
         {
           preserveScroll: true,
           preserveState: true,
-          only: ["invitations", "filters"],
+          only: ["users", "filters"],
           replace: true,
         },
       );
@@ -77,13 +75,14 @@ export default function Index({ invitations, filters, statusCounts }) {
     return () => clearTimeout(timeout);
   }, [search]);
 
-  const tabHref = (status) => {
+  const tabHref = (tab) => {
     const params = {};
-    if (status) params.status = status;
+    if (tab.key === "admin" || tab.key === "customer") params.role = tab.key;
+    if (tab.key === "verified" || tab.key === "unverified") params.verified = tab.key;
     if (filters.search) params.search = filters.search;
     if (filters.sort) params.sort = filters.sort;
     if (filters.direction) params.direction = filters.direction;
-    return route("admin.invitations.index", params);
+    return route("admin.users.index", params);
   };
 
   const handleSort = (key) => {
@@ -91,9 +90,10 @@ export default function Index({ invitations, filters, statusCounts }) {
       filters.sort === key && filters.direction === "asc" ? "desc" : "asc";
 
     router.get(
-      route("admin.invitations.index"),
+      route("admin.users.index"),
       {
-        ...(filters.status ? { status: filters.status } : {}),
+        ...(filters.role ? { role: filters.role } : {}),
+        ...(filters.verified ? { verified: filters.verified } : {}),
         ...(filters.search ? { search: filters.search } : {}),
         sort: key,
         direction: nextDirection,
@@ -101,40 +101,49 @@ export default function Index({ invitations, filters, statusCounts }) {
       {
         preserveScroll: true,
         preserveState: true,
-        only: ["invitations", "filters"],
+        only: ["users", "filters"],
+      },
+    );
+  };
+
+  const updateRole = (user, role) => {
+    router.patch(
+      route("admin.users.role", user.id),
+      { role },
+      {
+        preserveScroll: true,
+        only: ["users", "filters", "roleCounts", "flash"],
       },
     );
   };
 
   const tabs = [
-    { key: "", label: "All", count: statusCounts?.total },
-    { key: "pending", label: "Pending", count: statusCounts?.pending },
-    { key: "active", label: "Active", count: statusCounts?.active },
-    { key: "inactive", label: "Inactive", count: statusCounts?.inactive },
+    { key: "", label: "All", count: roleCounts?.total },
+    { key: "admin", label: "Admins", count: roleCounts?.admin },
+    { key: "customer", label: "Customers", count: roleCounts?.customer },
+    { key: "verified", label: "Verified", count: roleCounts?.verified },
+    { key: "unverified", label: "Unverified", count: roleCounts?.unverified },
   ];
 
-  const updateStatus = (invitation, status) => {
-    router.patch(
-      route("admin.invitations.status", invitation.id),
-      { status },
-      {
-        preserveScroll: true,
-        only: ["invitations", "filters", "statusCounts", "flash"],
-      },
-    );
+  const isTabActive = (tab) => {
+    if (tab.key === "") return !filters.role && !filters.verified;
+    if (["admin", "customer"].includes(tab.key)) {
+      return filters.role === tab.key;
+    }
+    return filters.verified === tab.key;
   };
 
   return (
     <>
-      <Head title="Admin Invitations" />
+      <Head title="Admin Users" />
 
       <AdminLayout>
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Invitations
+            Users
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage every invitation and its status.
+            Manage every user and their activity.
           </p>
         </div>
 
@@ -143,11 +152,10 @@ export default function Index({ invitations, filters, statusCounts }) {
             {tabs.map((tab) => (
               <Link
                 key={tab.key}
-                href={tabHref(tab.key)}
+                href={tabHref(tab)}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
-                  (!filters.status && tab.key === "") ||
-                    filters.status === tab.key
+                  isTabActive(tab)
                     ? "bg-gray-900 text-white"
                     : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
                 )}
@@ -156,8 +164,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                 <span
                   className={cn(
                     "rounded-full px-2 py-0.5 text-xs tabular-nums",
-                    (!filters.status && tab.key === "") ||
-                      filters.status === tab.key
+                    isTabActive(tab)
                       ? "bg-white/20 text-white"
                       : "bg-gray-100 text-gray-500",
                   )}
@@ -170,7 +177,7 @@ export default function Index({ invitations, filters, statusCounts }) {
 
           <div className="flex items-center gap-2">
             {hasFilters && (
-              <Link href={route("admin.invitations.index")}>
+              <Link href={route("admin.users.index")}>
                 <Button variant="ghost" size="sm">
                   <X /> Reset
                 </Button>
@@ -183,7 +190,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search couple, venue, owner..."
+                placeholder="Search name, email..."
                 className="w-64 pl-9"
               />
             </div>
@@ -191,11 +198,11 @@ export default function Index({ invitations, filters, statusCounts }) {
         </div>
 
         <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-          {invitations.data.length === 0 ? (
+          {users.data.length === 0 ? (
             <Card>
               <CardContent className="py-16 text-center">
                 <p className="text-sm font-medium text-gray-900">
-                  No invitations found
+                  No users found
                 </p>
                 <p className="mt-1 text-sm text-gray-500">
                   Try adjusting your filters or search.
@@ -220,67 +227,67 @@ export default function Index({ invitations, filters, statusCounts }) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {invitations.data.map((invitation) => (
-                      <tr
-                        key={invitation.id}
-                        className="transition hover:bg-gray-50"
-                      >
+                    {users.data.map((user) => (
+                      <tr key={user.id} className="transition hover:bg-gray-50">
                         <td className="max-w-sm px-6 py-4">
-                          <a
-                            href={`/${invitation.slug}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm font-medium text-gray-900 transition hover:text-blue-600"
-                          >
-                            {invitation.groom_name} & {invitation.bride_name}
-                          </a>
+                          <p className="text-sm font-medium text-gray-900">
+                            {user.name}
+                          </p>
                           <p className="mt-0.5 text-xs text-gray-500">
-                            <span className="tabular-nums">#{invitation.id}</span>
-                            {invitation.venue_name && ` · ${invitation.venue_name}`}
+                            <span className="tabular-nums">#{user.id}</span>
+                            {user.email_verified_at
+                              ? " · Verified"
+                              : " · Not verified"}
                           </p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-gray-900">
-                            {invitation.user?.name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {invitation.user?.email}
-                          </p>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {invitation.template?.name ?? "—"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {formatDate(invitation.event_date)}
+                          <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
+                            <Mail className="size-3.5 text-gray-400" />
+                            {user.email}
+                          </span>
                         </td>
                         <td className="px-6 py-4">
                           <Select
-                            items={STATUS_ITEMS}
-                            value={invitation.status}
-                            onValueChange={(value) =>
-                              updateStatus(invitation, value)
-                            }
+                            items={ROLE_ITEMS}
+                            value={user.role}
+                            onValueChange={(value) => updateRole(user, value)}
                           >
                             <SelectTrigger className="h-7 w-28 rounded-full px-2.5 text-xs font-medium [&_svg]:text-current">
-                              <span
-                                className={cn(
-                                  "size-2 shrink-0 rounded-full",
-                                  statusDotClass[invitation.status],
-                                )}
-                              />
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {STATUSES.map((status) => (
-                                <SelectItem key={status} value={status}>
-                                  {STATUS_ITEMS[status]}
+                              {ROLES.map((role) => (
+                                <SelectItem key={role} value={role}>
+                                  {ROLE_ITEMS[role]}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                         </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                            {user.invitations_count}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "rounded-full",
+                              user.email_verified_at &&
+                                "bg-emerald-50 text-emerald-700",
+                            )}
+                          >
+                            {user.email_verified_at && (
+                              <span className="size-2 shrink-0 rounded-full bg-emerald-500" />
+                            )}
+                            {user.email_verified_at
+                              ? "Verified"
+                              : "Not verified"}
+                          </Badge>
+                        </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {formatDate(invitation.created_at)}
+                          {formatDate(user.created_at)}
                         </td>
                       </tr>
                     ))}
@@ -288,7 +295,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                 </table>
               </div>
 
-              <Pagination pagination={invitations} />
+              <Pagination pagination={users} />
             </>
           )}
         </div>

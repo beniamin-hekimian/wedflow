@@ -160,9 +160,9 @@ class InvitationController extends Controller
             $sort = 'created_at';
         }
 
-        $direction = $request->query('direction', 'desc');
+        $direction = $request->query('direction', 'asc');
         if (! in_array($direction, ['asc', 'desc'], true)) {
-            $direction = 'desc';
+            $direction = 'asc';
         }
 
         $rows = $invitation->responses()

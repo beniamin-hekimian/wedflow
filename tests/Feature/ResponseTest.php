@@ -307,7 +307,7 @@ class ResponseTest extends TestCase
                 ->where('filters.direction', 'desc'));
     }
 
-    public function test_invalid_sort_falls_back_to_newest_first(): void
+    public function test_invalid_sort_falls_back_to_oldest_first(): void
     {
         $owner = User::factory()->create();
         $invitation = $this->invitation($owner);
@@ -326,9 +326,9 @@ class ResponseTest extends TestCase
             ->get(route('invitations.responses', $invitation) . '?sort=bogus&direction=sideways')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->where('rows.data.0.guest_name', 'New')
+                ->where('rows.data.0.guest_name', 'Old')
                 ->where('filters.sort', 'created_at')
-                ->where('filters.direction', 'desc'));
+                ->where('filters.direction', 'asc'));
     }
 
     public function test_responses_pagination_preserves_sort_query(): void

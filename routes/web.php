@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvitationController as AdminInvitationController;
+use App\Http\Controllers\Admin\MelodyController as AdminMelodyController;
+use App\Http\Controllers\Admin\ResponseController as AdminResponseController;
+use App\Http\Controllers\Admin\TemplateController as AdminTemplateController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MelodyController;
 use App\Http\Controllers\ProfileController;
@@ -42,6 +46,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/invitations', [AdminInvitationController::class, 'index'])->name('invitations.index');
     Route::patch('/invitations/{invitation}/status', [AdminInvitationController::class, 'updateStatus'])->name('invitations.status');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
+    Route::get('/templates', [AdminTemplateController::class, 'index'])->name('templates.index');
+    Route::get('/melodies', [AdminMelodyController::class, 'index'])->name('melodies.index');
+    Route::get('/responses', [AdminResponseController::class, 'index'])->name('responses.index');
 });
 
 Route::get('/invitations/create', [InvitationController::class, 'create'])

@@ -1,4 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
+import {
+  LayoutDashboard,
+  LayoutTemplate,
+  Mail,
+  MessageSquareText,
+  Music,
+  Users,
+} from 'lucide-react';
 
 import Navbar from '@/Components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -11,11 +19,37 @@ export default function AdminLayout({ children }) {
       name: 'Dashboard',
       href: route('admin.dashboard'),
       active: route().current('admin.dashboard'),
+      icon: LayoutDashboard,
+    },
+    {
+      name: 'Users',
+      href: route('admin.users.index'),
+      active: route().current('admin.users*'),
+      icon: Users,
+    },
+    {
+      name: 'Templates',
+      href: route('admin.templates.index'),
+      active: route().current('admin.templates*'),
+      icon: LayoutTemplate,
+    },
+    {
+      name: 'Melodies',
+      href: route('admin.melodies.index'),
+      active: route().current('admin.melodies*'),
+      icon: Music,
     },
     {
       name: 'Invitations',
       href: route('admin.invitations.index'),
       active: route().current('admin.invitations*'),
+      icon: Mail,
+    },
+    {
+      name: 'Responses',
+      href: route('admin.responses.index'),
+      active: route().current('admin.responses*'),
+      icon: MessageSquareText,
     },
   ];
 
@@ -36,12 +70,13 @@ export default function AdminLayout({ children }) {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`block rounded-md px-3 py-2 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition ${
                   item.active
                     ? 'bg-gray-200 text-gray-900'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
+                <item.icon className="size-4 shrink-0" />
                 {item.name}
               </Link>
             ))}

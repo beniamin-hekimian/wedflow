@@ -156,4 +156,78 @@ class AdminInvitationTest extends TestCase
 
         $this->assertSame('pending', $invitation->fresh()->status);
     }
+
+    public function test_admin_can_sort_invitations_by_couple(): void
+    {
+        $user = User::factory()->create();
+
+        $this->invitation($user, ['groom_name' => 'Zoe']);
+        $this->invitation($user, ['groom_name' => 'Amy']);
+        $this->invitation($user, ['groom_name' => 'Max']);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.invitations.index', ['sort' => 'groom_name', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.sort', 'groom_name')
+                ->where('filters.direction', 'asc')
+                ->where('invitations.data.0.groom_name', 'Amy')
+                ->where('invitations.data.1.groom_name', 'Max')
+                ->where('invitations.data.2.groom_name', 'Zoe'));
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.invitations.index', ['sort' => 'groom_name', 'direction' => 'desc']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('invitations.data.0.groom_name', 'Zoe'));
+    }
+
+    public function test_admin_can_sort_invitations_by_owner(): void
+    {
+        $alice = User::factory()->create(['name' => 'Alice']);
+        $calvin = User::factory()->create(['name' => 'Calvin']);
+        $betty = User::factory()->create(['name' => 'Betty']);
+
+        $this->invitation($alice);
+        $this->invitation($calvin);
+        $this->invitation($betty);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.invitations.index', ['sort' => 'owner_name', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('invitations.data.0.user.name', 'Alice')
+                ->where('invitations.data.1.user.name', 'Betty')
+                ->where('invitations.data.2.user.name', 'Calvin'));
+    }
+
+    public function test_invalid_sort_falls_back_to_oldest_first(): void
+    {
+        $user = User::factory()->create();
+
+        $this->invitation($user, ['groom_name' => 'Old']);
+        $this->invitation($user, ['groom_name' => 'Latest']);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.invitations.index', ['sort' => 'bogus', 'direction' => 'sideways']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.sort', 'created_at')
+                ->where('filters.direction', 'asc')
+                ->where('invitations.data.0.groom_name', 'Old'));
+    }
+
+    public function test_admin_report_exposes_invitation_slug_for_url(): void
+    {
+        $user = User::factory()->create();
+        $invitation = $this->invitation($user, ['slug' => 'john-and-jane']);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.invitations.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where(
+                'invitations.data.0.slug',
+                'john-and-jane',
+            ));
+    }
 }

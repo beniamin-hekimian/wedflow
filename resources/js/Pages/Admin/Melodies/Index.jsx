@@ -1,6 +1,6 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Pause, Play, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import Pagination from "@/Components/Pagination";
 import SortableTh from "@/Components/SortableTh";
@@ -8,28 +8,9 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-const STATUSES = ["pending", "active", "inactive"];
-
-const STATUS_ITEMS = {
-  pending: "Pending",
-  active: "Active",
-  inactive: "Inactive",
-};
-
-const statusDotClass = {
-  pending: "bg-yellow-500",
-  active: "bg-emerald-500",
-  inactive: "bg-red-500",
-};
+const USAGE_FILTERS = ["in-use", "unused"];
 
 const formatDate = (value) => {
   if (!value) return "—";
@@ -41,26 +22,26 @@ const formatDate = (value) => {
 };
 
 const columns = [
-  { key: "groom_name", label: "Couple" },
-  { key: "owner_name", label: "Owner" },
-  { key: "template_name", label: "Template" },
-  { key: "event_date", label: "Event" },
-  { key: "status", label: "Status" },
+  { key: "name", label: "Melody" },
+  { key: "invitations_count", label: "Invitations" },
   { key: "created_at", label: "Created" },
 ];
 
-export default function Index({ invitations, filters, statusCounts }) {
+export default function Index({ melodies, filters, usageCounts }) {
   const [search, setSearch] = useState(filters.search ?? "");
-  const hasFilters = Boolean(filters.status) || Boolean(filters.search);
+  const [playingId, setPlayingId] = useState(null);
+  const audioRef = useRef(null);
+
+  const hasFilters = Boolean(filters.usage) || Boolean(filters.search);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (search === filters.search) return;
 
       router.get(
-        route("admin.invitations.index"),
+        route("admin.melodies.index"),
         {
-          ...(filters.status ? { status: filters.status } : {}),
+          ...(filters.usage ? { usage: filters.usage } : {}),
           ...(filters.sort ? { sort: filters.sort } : {}),
           ...(filters.direction ? { direction: filters.direction } : {}),
           ...(search ? { search } : {}),
@@ -68,7 +49,7 @@ export default function Index({ invitations, filters, statusCounts }) {
         {
           preserveScroll: true,
           preserveState: true,
-          only: ["invitations", "filters"],
+          only: ["melodies", "filters"],
           replace: true,
         },
       );
@@ -77,13 +58,13 @@ export default function Index({ invitations, filters, statusCounts }) {
     return () => clearTimeout(timeout);
   }, [search]);
 
-  const tabHref = (status) => {
+  const tabHref = (usage) => {
     const params = {};
-    if (status) params.status = status;
+    if (usage) params.usage = usage;
     if (filters.search) params.search = filters.search;
     if (filters.sort) params.sort = filters.sort;
     if (filters.direction) params.direction = filters.direction;
-    return route("admin.invitations.index", params);
+    return route("admin.melodies.index", params);
   };
 
   const handleSort = (key) => {
@@ -91,9 +72,9 @@ export default function Index({ invitations, filters, statusCounts }) {
       filters.sort === key && filters.direction === "asc" ? "desc" : "asc";
 
     router.get(
-      route("admin.invitations.index"),
+      route("admin.melodies.index"),
       {
-        ...(filters.status ? { status: filters.status } : {}),
+        ...(filters.usage ? { usage: filters.usage } : {}),
         ...(filters.search ? { search: filters.search } : {}),
         sort: key,
         direction: nextDirection,
@@ -101,40 +82,43 @@ export default function Index({ invitations, filters, statusCounts }) {
       {
         preserveScroll: true,
         preserveState: true,
-        only: ["invitations", "filters"],
+        only: ["melodies", "filters"],
       },
     );
+  };
+
+  const togglePlay = (melody) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (playingId === melody.id) {
+      audio.pause();
+      setPlayingId(null);
+      return;
+    }
+
+    audio.src = `/${melody.file_path}`;
+    audio.play().catch(() => setPlayingId(null));
+    setPlayingId(melody.id);
   };
 
   const tabs = [
-    { key: "", label: "All", count: statusCounts?.total },
-    { key: "pending", label: "Pending", count: statusCounts?.pending },
-    { key: "active", label: "Active", count: statusCounts?.active },
-    { key: "inactive", label: "Inactive", count: statusCounts?.inactive },
+    { key: "", label: "All", count: usageCounts?.total },
+    { key: "in-use", label: "In use", count: usageCounts?.inUse },
+    { key: "unused", label: "Unused", count: usageCounts?.unused },
   ];
-
-  const updateStatus = (invitation, status) => {
-    router.patch(
-      route("admin.invitations.status", invitation.id),
-      { status },
-      {
-        preserveScroll: true,
-        only: ["invitations", "filters", "statusCounts", "flash"],
-      },
-    );
-  };
 
   return (
     <>
-      <Head title="Admin Invitations" />
+      <Head title="Admin Melodies" />
 
       <AdminLayout>
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Invitations
+            Melodies
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage every invitation and its status.
+            Manage every wedding melody and how it is being used.
           </p>
         </div>
 
@@ -146,8 +130,8 @@ export default function Index({ invitations, filters, statusCounts }) {
                 href={tabHref(tab.key)}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
-                  (!filters.status && tab.key === "") ||
-                    filters.status === tab.key
+                  (!filters.usage && tab.key === "") ||
+                    filters.usage === tab.key
                     ? "bg-gray-900 text-white"
                     : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
                 )}
@@ -156,8 +140,8 @@ export default function Index({ invitations, filters, statusCounts }) {
                 <span
                   className={cn(
                     "rounded-full px-2 py-0.5 text-xs tabular-nums",
-                    (!filters.status && tab.key === "") ||
-                      filters.status === tab.key
+                    (!filters.usage && tab.key === "") ||
+                      filters.usage === tab.key
                       ? "bg-white/20 text-white"
                       : "bg-gray-100 text-gray-500",
                   )}
@@ -170,7 +154,7 @@ export default function Index({ invitations, filters, statusCounts }) {
 
           <div className="flex items-center gap-2">
             {hasFilters && (
-              <Link href={route("admin.invitations.index")}>
+              <Link href={route("admin.melodies.index")}>
                 <Button variant="ghost" size="sm">
                   <X /> Reset
                 </Button>
@@ -183,7 +167,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search couple, venue, owner..."
+                placeholder="Search name, file..."
                 className="w-64 pl-9"
               />
             </div>
@@ -191,11 +175,11 @@ export default function Index({ invitations, filters, statusCounts }) {
         </div>
 
         <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-          {invitations.data.length === 0 ? (
+          {melodies.data.length === 0 ? (
             <Card>
               <CardContent className="py-16 text-center">
                 <p className="text-sm font-medium text-gray-900">
-                  No invitations found
+                  No melodies found
                 </p>
                 <p className="mt-1 text-sm text-gray-500">
                   Try adjusting your filters or search.
@@ -220,67 +204,44 @@ export default function Index({ invitations, filters, statusCounts }) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {invitations.data.map((invitation) => (
-                      <tr
-                        key={invitation.id}
-                        className="transition hover:bg-gray-50"
-                      >
-                        <td className="max-w-sm px-6 py-4">
-                          <a
-                            href={`/${invitation.slug}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm font-medium text-gray-900 transition hover:text-blue-600"
-                          >
-                            {invitation.groom_name} & {invitation.bride_name}
-                          </a>
-                          <p className="mt-0.5 text-xs text-gray-500">
-                            <span className="tabular-nums">#{invitation.id}</span>
-                            {invitation.venue_name && ` · ${invitation.venue_name}`}
-                          </p>
+                    {melodies.data.map((melody) => (
+                      <tr key={melody.id} className="transition hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => togglePlay(melody)}
+                              aria-label={
+                                playingId === melody.id
+                                  ? "Pause melody"
+                                  : "Play melody"
+                              }
+                              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 hover:text-gray-900"
+                            >
+                              {playingId === melody.id ? (
+                                <Pause className="size-4" />
+                              ) : (
+                                <Play className="size-4" />
+                              )}
+                            </button>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {melody.name}
+                              </p>
+                              <p className="mt-0.5 text-xs text-gray-500">
+                                <span className="tabular-nums">#{melody.id}</span>
+                                {` · ${melody.file_path}`}
+                              </p>
+                            </div>
+                          </div>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-gray-900">
-                            {invitation.user?.name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {invitation.user?.email}
-                          </p>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {invitation.template?.name ?? "—"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {formatDate(invitation.event_date)}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Select
-                            items={STATUS_ITEMS}
-                            value={invitation.status}
-                            onValueChange={(value) =>
-                              updateStatus(invitation, value)
-                            }
-                          >
-                            <SelectTrigger className="h-7 w-28 rounded-full px-2.5 text-xs font-medium [&_svg]:text-current">
-                              <span
-                                className={cn(
-                                  "size-2 shrink-0 rounded-full",
-                                  statusDotClass[invitation.status],
-                                )}
-                              />
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {STATUSES.map((status) => (
-                                <SelectItem key={status} value={status}>
-                                  {STATUS_ITEMS[status]}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                            {melody.invitations_count}
+                          </span>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {formatDate(invitation.created_at)}
+                          {formatDate(melody.created_at)}
                         </td>
                       </tr>
                     ))}
@@ -288,9 +249,14 @@ export default function Index({ invitations, filters, statusCounts }) {
                 </table>
               </div>
 
-              <Pagination pagination={invitations} />
+              <audio
+                ref={audioRef}
+                onEnded={() => setPlayingId(null)}
+              />
             </>
           )}
+
+          {melodies.data.length > 0 && <Pagination pagination={melodies} />}
         </div>
       </AdminLayout>
     </>
