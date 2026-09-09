@@ -13,6 +13,15 @@
     }
 
     :root {
+        --wax-ivory: #faf7f2;
+        --wax-cream: #f4efe6;
+        --wax-card: #fffcf6;
+        --wax-gold: #c5a059;
+        --wax-gold-deep: #b89047;
+        --wax-ink: #4b4233;
+        --wax-ink-soft: #6e6351;
+        --wax-ink-faint: #94876f;
+
         --background: oklch(0.977 0.008 80);
         --foreground: oklch(0.328 0.028 70);
         --card: oklch(0.992 0.008 85);
@@ -48,6 +57,15 @@
     }
 
     .dark {
+        --wax-ivory: #1a1712;
+        --wax-cream: #211d17;
+        --wax-card: #251f18;
+        --wax-gold: #c9a45c;
+        --wax-gold-deep: #c5a059;
+        --wax-ink: #eadfc9;
+        --wax-ink-soft: #b8ab93;
+        --wax-ink-faint: #8d8270;
+
         --background: oklch(0.16 0.01 60);
         --foreground: oklch(0.93 0.02 85);
         --card: oklch(0.2 0.012 60);

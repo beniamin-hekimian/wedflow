@@ -22,14 +22,14 @@ export default {
             // 2. Add shadcn CSS variables to remove the "border-border" error
             colors: {
                 wax: {
-                    ivory: "#faf7f2",
-                    cream: "#f4efe6",
-                    card: "#fffcf6",
-                    gold: "#c5a059",
-                    goldDeep: "#b89047",
-                    ink: "#4b4233",
-                    inkSoft: "#6e6351",
-                    inkFaint: "#94876f",
+                    ivory: "var(--wax-ivory)",
+                    cream: "var(--wax-cream)",
+                    card: "var(--wax-card)",
+                    gold: "var(--wax-gold)",
+                    goldDeep: "var(--wax-gold-deep)",
+                    ink: "var(--wax-ink)",
+                    inkSoft: "var(--wax-ink-soft)",
+                    inkFaint: "var(--wax-ink-faint)",
                 },
                 border: "var(--border)",
                 input: "var(--input)",

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { User } from 'lucide-react';
 
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import ThemeToggle from '@/Components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
@@ -79,6 +80,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           {user ? (
             <>
               <Link href={route('profile.edit')}>
@@ -171,6 +173,15 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+
+          <div className="border-t border-border pt-3">
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                Dark mode
+              </span>
+              <ThemeToggle />
+            </div>
+          </div>
 
           <div className="border-t border-border pt-3">
             {user ? (
