@@ -136,6 +136,38 @@ class PublicInvitationTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_admin_can_preview_a_pending_invitation_owned_by_someone_else(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $owner = User::factory()->create();
+        $invitation = $this->invitation($owner, ['status' => 'pending']);
+
+        $this->actingAs($admin)
+            ->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Classic')
+                ->where('invitation.slug', $invitation->slug)
+                ->where('invitation.status', 'pending')
+                ->where('preview', true));
+    }
+
+    public function test_admin_can_preview_an_inactive_invitation_owned_by_someone_else(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $owner = User::factory()->create();
+        $invitation = $this->invitation($owner, ['status' => 'inactive']);
+
+        $this->actingAs($admin)
+            ->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Classic')
+                ->where('invitation.slug', $invitation->slug)
+                ->where('invitation.status', 'inactive')
+                ->where('preview', true));
+    }
+
     public function test_inactive_invitation_is_not_publicly_visible(): void
     {
         $user = User::factory()->create();

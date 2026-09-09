@@ -7,6 +7,7 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import {
+  CalendarDays,
   LayoutDashboard,
   LayoutTemplate,
   Mail,
@@ -57,6 +58,12 @@ export default function AdminLayout({ children }) {
       href: route('admin.melodies.index'),
       active: route().current('admin.melodies*'),
       icon: Music,
+    },
+    {
+      name: 'Events',
+      href: route('admin.events.index'),
+      active: route().current('admin.events*'),
+      icon: CalendarDays,
     },
     {
       name: 'Invitations',

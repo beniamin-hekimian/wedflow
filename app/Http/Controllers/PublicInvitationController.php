@@ -33,21 +33,26 @@ class PublicInvitationController extends Controller
 
     private function resolve(string $slug): array
     {
-        $invitation = Invitation::with([
+        $query = Invitation::with([
             'template',
             'melody',
             'events' => fn ($query) => $query->orderBy('position'),
             'photos' => fn ($query) => $query->orderBy('position'),
-        ])
-            ->where('slug', $slug)
-            ->where(function ($query) {
+        ])->where('slug', $slug);
+
+        $user = auth()->user();
+
+        if ($user?->role !== 'admin') {
+            $query->where(function ($query) use ($user) {
                 $query->where('status', 'active');
 
-                if ($userId = auth()->id()) {
-                    $query->orWhere('user_id', $userId);
+                if ($user) {
+                    $query->orWhere('user_id', $user->id);
                 }
-            })
-            ->firstOrFail();
+            });
+        }
+
+        $invitation = $query->firstOrFail();
 
         $component = 'Public/Templates/' . Str::studly($invitation->template->slug);
 

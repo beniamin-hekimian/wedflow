@@ -51,16 +51,18 @@ final class PublicApi
         path: '/{slug}',
         tags: ['Public'],
         summary: 'Render a public invitation page',
-        description: 'Renders the public invitation page for a slug. The invitation must have `status` '
-        . 'set to `active` and a matching frontend template component must exist, otherwise a 404 is returned.'
-        . ' Props: `invitation` (Invitation with `template`, `melody`, `events`, `photos` loaded) and'
-        . ' `wishes` (array of Response with only `id`, `guest_name`, `message`, `created_at` for visible wishes).',
+        description: 'Renders the public invitation page for a slug. Guests need `status` `active`; the '
+        . 'owner can also view their pending/inactive invitation, and admins can view any status. A missing'
+        . ' slug or a non-active invitation (for non-owners/admins) returns 404, as does a missing frontend'
+        . ' template component. Props: `invitation` (Invitation with `template`, `melody`, `events`, `photos`'
+        . ' loaded), `wishes` (array of Response with only `id`, `guest_name`, `message`, `created_at` for'
+        . ' visible wishes) and `preview` (bool, true when the invitation is not active).',
         parameters: [
             new OA\Parameter(name: 'slug', in: 'path', required: true, description: 'Invitation slug.', schema: new OA\Schema(type: 'string')),
         ],
         responses: [
             new OA\Response(response: 200, description: 'Public invitation page (`Public/Templates/{Template}`).', content: new OA\JsonContent(ref: '#/components/schemas/PageResponse')),
-            new OA\Response(response: 404, description: 'Inactive invitation or missing template component.'),
+            new OA\Response(response: 404, description: 'Unknown slug, non-active invitation without owner/admin access, or missing template component.'),
         ],
     )]
     public function invitationShow(): void

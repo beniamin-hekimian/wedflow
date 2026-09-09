@@ -214,6 +214,9 @@ final class Event
 
     #[OA\Property(description: 'Catalog display position.', example: 2)]
     public int $sort_order;
+
+    #[OA\Property(description: 'Number of invitations using the event (admin reports only).', example: 3, nullable: true)]
+    public ?int $invitations_count;
 }
 
 #[OA\Schema(schema: 'Photo', description: 'A photo uploaded to an invitation.')]

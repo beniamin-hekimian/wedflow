@@ -156,6 +156,29 @@ final class AdminApi
     }
 
     #[OA\Get(
+        path: '/admin/events',
+        tags: ['Admin'],
+        summary: 'List all timeline events',
+        description: 'Renders the paginated admin event report. Props: `events` (Paginator of Event'
+        . ' with `invitations_count`), `filters` (`{ usage, search, sort, direction }`) and `usageCounts`'
+        . ' (`{ total, inUse, unused }`). Defaults to ascending `sort_order`.',
+        parameters: [
+            new OA\Parameter(name: 'usage', in: 'query', required: false, description: 'Filter by usage.', schema: new OA\Schema(type: 'string', enum: ['in-use', 'unused'])),
+            new OA\Parameter(name: 'search', in: 'query', required: false, description: 'Matches event name.', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'sort', in: 'query', required: false, description: '`name`, `sort_order`, `invitations_count` or `created_at`.', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'direction', in: 'query', required: false, description: '`asc` or `desc`.', schema: new OA\Schema(type: 'string', enum: ['asc', 'desc'])),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Events report (`Admin/Events/Index`).', content: new OA\JsonContent(ref: '#/components/schemas/PageResponse')),
+            new OA\Response(response: 302, description: 'Redirected to login when not authenticated.'),
+            new OA\Response(response: 403, description: 'Requires the `admin` role.'),
+        ],
+    )]
+    public function adminEventsIndex(): void
+    {
+    }
+
+    #[OA\Get(
         path: '/admin/responses',
         tags: ['Admin'],
         summary: 'List all responses',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\InvitationController as AdminInvitationController;
 use App\Http\Controllers\Admin\MelodyController as AdminMelodyController;
 use App\Http\Controllers\Admin\ResponseController as AdminResponseController;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
     Route::get('/templates', [AdminTemplateController::class, 'index'])->name('templates.index');
     Route::get('/melodies', [AdminMelodyController::class, 'index'])->name('melodies.index');
+    Route::get('/events', [AdminEventController::class, 'index'])->name('events.index');
     Route::get('/responses', [AdminResponseController::class, 'index'])->name('responses.index');
 });
 

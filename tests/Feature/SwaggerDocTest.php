@@ -20,7 +20,7 @@ class SwaggerDocTest extends BaseTestCase
         $this->assertIsArray($docs);
         $this->assertSame('3.0.0', $docs['openapi']);
         $this->assertSame('Wedflow API', $docs['info']['title']);
-        $this->assertCount(31, $docs['paths']);
+        $this->assertCount(32, $docs['paths']);
         $this->assertArrayHasKey('PageResponse', $docs['components']['schemas']);
         $this->assertArrayHasKey('component', $docs['components']['schemas']['PageResponse']['properties']);
         $this->assertArrayHasKey('/{slug}/rsvp', $docs['paths']);
