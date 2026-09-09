@@ -12,13 +12,13 @@ export default function VerifyEmail({ status }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Email Verification" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
-          <div className="mb-4 text-sm text-gray-600">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
+          <div className="mb-4 text-sm text-muted-foreground">
             Thanks for signing up! Before getting started, could you verify your
             email address by clicking on the link we just emailed to you? If you
             didn't receive the email, we will gladly send you another.
@@ -41,7 +41,7 @@ export default function VerifyEmail({ status }) {
                 href={route('logout')}
                 method="post"
                 as="button"
-                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Log Out
               </Link>

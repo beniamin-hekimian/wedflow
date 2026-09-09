@@ -17,7 +17,7 @@ class DashboardController extends Controller
                 'active' => Invitation::where('status', 'active')->count(),
                 'pending' => Invitation::where('status', 'pending')->count(),
                 'users' => User::count(),
-                'verified' => User::whereNotNull('email_verified_at')->count(),
+                'admins' => User::where('role', 'admin')->count(),
             ],
             'topInvitations' => Invitation::query()
                 ->withCount('responses')

@@ -24,15 +24,15 @@ export default function Login({ status }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Log in" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="font-display text-3xl font-bold text-foreground">Welcome back</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Log in to manage your wedding invitations.
             </p>
           </div>
@@ -91,14 +91,14 @@ export default function Login({ status }) {
                   checked={data.remember}
                   onChange={(e) => setData('remember', e.target.checked)}
                 />
-                <span className="ms-2 text-sm text-gray-600">Remember me</span>
+                <span className="ms-2 text-sm text-muted-foreground">Remember me</span>
               </label>
             </div>
 
             <div className="mt-4 flex items-center justify-end">
               <Link
                 href={route('register')}
-                className="rounded-md text-sm text-gray-600 underline transition hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="rounded-md text-sm text-muted-foreground underline transition hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Don't have an account?
               </Link>

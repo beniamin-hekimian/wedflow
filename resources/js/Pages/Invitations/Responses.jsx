@@ -66,7 +66,7 @@ export default function Responses({
     <>
       <Head title={`Responses - ${invitation.groom_name} & ${invitation.bride_name}`} />
 
-      <div className="flex min-h-screen flex-col bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
 
         <main className="flex-1">
@@ -74,7 +74,7 @@ export default function Responses({
             <div className="mb-6">
               <Link
                 href={route('invitations.index')}
-                className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition hover:text-gray-900"
+                className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition hover:text-foreground"
               >
                 <ArrowLeft className="size-4" /> My Invitations
               </Link>
@@ -82,10 +82,10 @@ export default function Responses({
 
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="font-display text-2xl font-semibold leading-tight text-foreground">
                   {invitation.groom_name} & {invitation.bride_name}
                 </h2>
-                <p className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                   <CalendarDays className="size-4" />
                   {formatDate(invitation.event_date)}
                   {invitation.venue_name && (
@@ -107,10 +107,10 @@ export default function Responses({
               {statCards.map((stat) => (
                 <Card key={stat.key}>
                   <CardContent className="p-4">
-                    <p className="text-2xl font-semibold tabular-nums text-gray-900">
+                    <p className="text-2xl font-semibold tabular-nums text-foreground">
                       {summary[stat.key] ?? 0}
                     </p>
-                    <p className="mt-0.5 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    <p className="mt-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                       {stat.label}
                     </p>
                   </CardContent>
@@ -118,15 +118,15 @@ export default function Responses({
               ))}
             </div>
 
-            <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+            <div className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
               {rows.data.length === 0 ? (
                 <Card>
                   <CardContent className="flex flex-col items-center px-6 py-16 text-center">
-                    <Users className="size-8 text-gray-300" />
-                    <p className="mt-4 text-sm font-medium text-gray-900">
+                    <Users className="size-8 text-muted-foreground" />
+                    <p className="mt-4 text-sm font-medium text-foreground">
                       No responses yet
                     </p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-muted-foreground">
                       Responses from guests will appear here once they submit the RSVP form.
                     </p>
                   </CardContent>
@@ -134,8 +134,8 @@ export default function Responses({
               ) : (
                 <>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-border">
+                      <thead className="bg-muted/50">
                         <tr>
                           {columns.map((column) => (
                             <SortableTh
@@ -148,10 +148,10 @@ export default function Responses({
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
+                      <tbody className="divide-y divide-border bg-card">
                         {rows.data.map((response) => (
-                          <tr key={response.id} className="transition hover:bg-gray-50">
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                          <tr key={response.id} className="transition hover:bg-muted">
+                            <td className="px-6 py-4 text-sm font-medium text-foreground">
                               {response.guest_name}
                             </td>
                             <td className="px-6 py-4">
@@ -167,16 +167,16 @@ export default function Responses({
                                 {response.is_attending ? 'Accepted' : 'Declined'}
                               </Badge>
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-600">
+                            <td className="px-6 py-4 text-sm text-muted-foreground">
                               {response.is_attending ? response.count : '—'}
                             </td>
-                            <td className="max-w-md px-6 py-4 text-sm text-gray-600">
+                            <td className="max-w-md px-6 py-4 text-sm text-muted-foreground">
                               {response.message ? (
                                 <span className="line-clamp-2 whitespace-pre-line">
                                   {response.message}
                                 </span>
                               ) : (
-                                <span className="text-gray-400">—</span>
+                                <span className="text-muted-foreground">—</span>
                               )}
                             </td>
                             <td className="px-6 py-4">
@@ -186,7 +186,7 @@ export default function Responses({
                                     variant="outline"
                                     className={cn(
                                       'rounded-full',
-                                      response.is_hidden && 'bg-gray-100 text-gray-500',
+                                      response.is_hidden && 'bg-muted text-muted-foreground',
                                     )}
                                   >
                                     {response.is_hidden ? 'Hidden' : 'Visible'}
@@ -194,7 +194,7 @@ export default function Responses({
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="size-7 text-gray-500 transition hover:text-gray-900"
+                                    className="size-7 text-muted-foreground transition hover:text-foreground"
                                     onClick={() => toggleVisibility(response)}
                                     aria-label={
                                       response.is_hidden
@@ -210,10 +210,10 @@ export default function Responses({
                                   </Button>
                                 </div>
                               ) : (
-                                <span className="text-gray-400">—</span>
+                                <span className="text-muted-foreground">—</span>
                               )}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-500">
+                            <td className="px-6 py-4 text-sm text-muted-foreground">
                               {formatDate(response.created_at)}
                             </td>
                           </tr>

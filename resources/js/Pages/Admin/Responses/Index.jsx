@@ -116,10 +116,10 @@ export default function Index({ invitations, filters, attendanceCounts }) {
 
       <AdminLayout>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Responses
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Guest responses grouped by invitation.
           </p>
         </div>
@@ -134,8 +134,8 @@ export default function Index({ invitations, filters, attendanceCounts }) {
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
                   (!filters.attending && tab.key === "") ||
                     filters.attending === tab.key
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground ring-1 ring-border hover:bg-muted",
                 )}
               >
                 {tab.label}
@@ -145,7 +145,7 @@ export default function Index({ invitations, filters, attendanceCounts }) {
                     (!filters.attending && tab.key === "") ||
                       filters.attending === tab.key
                       ? "bg-white/20 text-white"
-                      : "bg-gray-100 text-gray-500",
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {tab.count ?? 0}
@@ -164,7 +164,7 @@ export default function Index({ invitations, filters, attendanceCounts }) {
             )}
 
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 value={search}
@@ -177,7 +177,7 @@ export default function Index({ invitations, filters, attendanceCounts }) {
         </div>
 
         <div className="mb-4 flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Sort by</span>
+          <span className="text-sm font-medium text-foreground">Sort by</span>
           <Select
             items={SORT_ITEMS}
             value={filters.sort ?? "created_at"}
@@ -213,10 +213,10 @@ export default function Index({ invitations, filters, attendanceCounts }) {
         {invitations.data.length === 0 ? (
           <Card>
             <CardContent className="py-16 text-center">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-foreground">
                 No responses found
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Try adjusting your filters or search.
               </p>
             </CardContent>
@@ -226,25 +226,25 @@ export default function Index({ invitations, filters, attendanceCounts }) {
             {invitations.data.map((invitation) => (
               <div
                 key={invitation.id}
-                className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200"
+                className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border"
               >
-                <div className="flex flex-col gap-3 border-b border-gray-200 bg-gray-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-3 border-b border-border bg-muted/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <a
                       href={`/${invitation.slug}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm font-medium text-gray-900 transition hover:text-blue-600"
+                      className="text-sm font-medium text-foreground transition hover:text-primary"
                     >
                       {invitation.groom_name} & {invitation.bride_name}
                     </a>
-                    <p className="mt-0.5 truncate text-xs text-gray-500">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                       {invitation.user?.email}
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                       <CalendarDays className="size-3.5" />
                       {formatDate(invitation.event_date)}
                     </span>
@@ -256,10 +256,10 @@ export default function Index({ invitations, filters, attendanceCounts }) {
                     ].map(({ label, value }) => (
                       <span
                         key={label}
-                        className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-xs font-medium tabular-nums text-gray-600 ring-1 ring-gray-200"
+                        className="inline-flex items-center gap-1 rounded-full bg-card px-2 py-0.5 text-xs font-medium tabular-nums text-muted-foreground ring-1 ring-border"
                       >
                         {value ?? 0}
-                        <span className="font-normal text-gray-400">
+                        <span className="font-normal text-muted-foreground">
                           {label}
                         </span>
                       </span>
@@ -268,35 +268,35 @@ export default function Index({ invitations, filters, attendanceCounts }) {
                 </div>
 
                 {invitation.responses.length === 0 ? (
-                  <p className="px-6 py-8 text-center text-sm text-gray-500">
+                  <p className="px-6 py-8 text-center text-sm text-muted-foreground">
                     No matching responses for this invitation.
                   </p>
                 ) : (
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-white">
+                    <table className="min-w-full divide-y divide-border">
+                      <thead className="bg-card">
                         <tr>
                           {responseColumns.map((label) => (
                             <th
                               key={label}
-                              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground"
                             >
                               {label}
                             </th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
+                      <tbody className="divide-y divide-border bg-card">
                         {invitation.responses.map((response) => (
                           <tr
                             key={response.id}
-                            className="transition hover:bg-gray-50"
+                            className="transition hover:bg-muted"
                           >
                             <td className="px-6 py-4">
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-sm font-medium text-foreground">
                                 {response.guest_name}
                               </p>
-                              <p className="mt-0.5 text-xs text-gray-500">
+                              <p className="mt-0.5 text-xs text-muted-foreground">
                                 <span className="tabular-nums">#{response.id}</span>
                               </p>
                             </td>
@@ -314,29 +314,29 @@ export default function Index({ invitations, filters, attendanceCounts }) {
                               </Badge>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                              <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums text-foreground">
                                 {response.count}
                               </span>
                             </td>
                             <td className="max-w-md px-6 py-4">
                               {response.message ? (
-                                <p className="line-clamp-2 text-sm text-gray-600">
+                                <p className="line-clamp-2 text-sm text-muted-foreground">
                                   {response.message}
                                 </p>
                               ) : (
-                                <span className="text-sm text-gray-400">—</span>
+                                <span className="text-sm text-muted-foreground">—</span>
                               )}
                             </td>
                             <td className="px-6 py-4">
                               {response.is_hidden ? (
-                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                                <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                                   Hidden
                                 </span>
                               ) : (
-                                <span className="text-sm text-gray-400">—</span>
+                                <span className="text-sm text-muted-foreground">—</span>
                               )}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-500">
+                            <td className="px-6 py-4 text-sm text-muted-foreground">
                               {formatDate(response.created_at)}
                             </td>
                           </tr>

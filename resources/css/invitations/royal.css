@@ -1,25 +1,37 @@
 .invitation-page {
-  --cream: #f7f1e4;
-  --sand: #e5dccb;
-  --card: #fffcf5;
-  --terracotta: #a64b31;
-  --terracotta-deep: #8a3b24;
-  --ink: #463d32;
-  --ink-soft: #6a5c49;
-  --ink-faint: #8d7d66;
-  --font-serif: "Cormorant Garamond", "Georgia", "Times New Roman", serif;
+  --ivory: #faf7f2;
+  --sand: #f4efe6;
+  --card: #fffcf6;
+  --gold: #c5a059;
+  --gold-deep: #b89047;
+  --ink: #4b4233;
+  --ink-soft: #6e6351;
+  --ink-faint: #94876f;
+  --font-serif: "Cinzel", "Georgia", "Times New Roman", serif;
   --font-script: "Great Vibes", "Brush Script MT", cursive;
-  --font-body: "Lora", "Georgia", serif;
+  --font-body: "Cormorant Garamond", "Georgia", serif;
 
+  position: relative;
   min-height: 100vh;
   color: var(--ink);
   font-family: var(--font-body);
   background:
-    radial-gradient(1100px 520px at 50% -8%, rgba(255, 245, 226, 0.95), transparent 60%),
-    linear-gradient(180deg, #f7f1e4 0%, #efe6d3 100%);
+    radial-gradient(1100px 520px at 50% -8%, rgba(255, 248, 235, 0.95), transparent 60%),
+    linear-gradient(180deg, #faf7f2 0%, #f4efe6 100%);
+}
+
+.invitation-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
 .invitation-page__inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 46rem;
   margin: 0 auto;
@@ -32,14 +44,41 @@
 
 .serif-display {
   font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .script-accent {
   font-family: var(--font-script);
   font-weight: 400;
-  color: var(--terracotta);
+  color: var(--gold);
+}
+
+/* Vines */
+.vine {
+  position: absolute;
+  z-index: 0;
+  width: 10.5rem;
+  height: auto;
+  color: var(--gold);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.vine--corner-tl {
+  top: 0.5rem;
+  left: 0.25rem;
+}
+
+.vine--corner-br {
+  right: 0.25rem;
+  bottom: 0.5rem;
+  transform: rotate(180deg);
+}
+
+.vine path {
+  stroke: currentColor;
+  fill: none;
 }
 
 /* Reveal */
@@ -66,7 +105,7 @@
   margin: 0 auto 1.5rem;
 }
 
-.hero__seal .wax-seal {
+.hero__seal .royal-seal {
   width: 100%;
   height: auto;
 }
@@ -77,7 +116,7 @@
   font-weight: 600;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 .hero__names {
@@ -92,7 +131,7 @@
   margin: 0 0.4rem;
   font-family: var(--font-script);
   font-size: 0.6em;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 .hero__script {
@@ -114,7 +153,7 @@
 }
 
 .hero__date-bullet {
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 /* Cards */
@@ -122,11 +161,11 @@
   padding: 2.75rem 2.25rem;
   text-align: center;
   background: var(--card);
-  border: 1px solid rgba(96, 78, 53, 0.08);
+  border: 1px solid rgba(184, 144, 71, 0.14);
   border-radius: 1.5rem;
   box-shadow:
-    0 1px 2px rgba(96, 78, 53, 0.05),
-    0 26px 48px -36px rgba(96, 78, 53, 0.4);
+    0 1px 2px rgba(120, 100, 70, 0.06),
+    0 26px 48px -36px rgba(120, 100, 70, 0.4);
 }
 
 .card__eyebrow {
@@ -135,7 +174,7 @@
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 .card__title {
@@ -188,8 +227,8 @@
 
 .countdown__field {
   padding: 1.25rem 0.25rem 1rem;
-  background: #faf4e8;
-  border: 1px solid rgba(96, 78, 53, 0.09);
+  background: var(--sand);
+  border: 1px solid rgba(184, 144, 71, 0.14);
   border-radius: 1rem;
 }
 
@@ -208,7 +247,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 /* Timeline */
@@ -229,7 +268,7 @@
   left: 50%;
   width: 1px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, transparent, rgba(166, 75, 49, 0.4), transparent);
+  background: linear-gradient(180deg, transparent, rgba(197, 160, 89, 0.4), transparent);
 }
 
 .timeline__item {
@@ -247,16 +286,16 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 .timeline__marker {
   width: 0.8rem;
   height: 0.8rem;
   background: var(--card);
-  border: 2px solid var(--terracotta);
+  border: 2px solid var(--gold);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(166, 75, 49, 0.12);
+  box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.14);
 }
 
 .timeline__name {
@@ -279,9 +318,9 @@
   margin-top: 1.5rem;
   overflow: hidden;
   background: var(--sand);
-  border: 1px solid rgba(96, 78, 53, 0.12);
+  border: 1px solid rgba(184, 144, 71, 0.14);
   border-radius: 1rem;
-  box-shadow: 0 12px 26px -20px rgba(96, 78, 53, 0.5);
+  box-shadow: 0 12px 26px -20px rgba(120, 100, 70, 0.5);
 }
 
 .map-frame__iframe {
@@ -297,9 +336,9 @@
   gap: 0.5rem;
   margin-top: 1.25rem;
   padding: 0.65rem 1.25rem;
-  border: 1px solid var(--terracotta);
+  border: 1px solid var(--gold);
   border-radius: 999px;
-  color: var(--terracotta);
+  color: var(--gold);
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-decoration: none;
@@ -308,8 +347,8 @@
 }
 
 .map-link:hover {
-  background: var(--terracotta-deep);
-  color: var(--cream);
+  background: var(--gold-deep);
+  color: var(--ivory);
 }
 
 .map-link__icon {
@@ -330,7 +369,7 @@
   overflow: hidden;
   background: var(--sand);
   border-radius: 1rem;
-  box-shadow: 0 12px 26px -20px rgba(96, 78, 53, 0.5);
+  box-shadow: 0 12px 26px -20px rgba(120, 100, 70, 0.5);
 }
 
 .gallery__item img {
@@ -362,26 +401,26 @@
   font-size: 1rem;
   color: var(--ink);
   text-decoration: none;
-  background: #faf4e8;
-  border: 1px solid rgba(166, 75, 49, 0.22);
+  background: var(--sand);
+  border: 1px solid rgba(197, 160, 89, 0.3);
   border-radius: 999px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a.contact-card__item:hover {
-  background: var(--terracotta);
+  background: var(--gold);
   color: #fff;
 }
 
 /* RSVP */
 .rsvp-card {
-  background: rgba(166, 75, 49, 0.05);
-  border: 1.5px dashed rgba(166, 75, 49, 0.45);
+  background: rgba(197, 160, 89, 0.06);
+  border: 1.5px dashed rgba(197, 160, 89, 0.5);
   box-shadow: none;
 }
 
 .rsvp-card__title {
-  color: var(--terracotta);
+  color: var(--gold);
   font-size: clamp(2.4rem, 6vw, 3rem);
 }
 
@@ -422,8 +461,8 @@ a.contact-card__item:hover {
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--ink);
-  background: #faf4e8;
-  border: 1px solid rgba(96, 78, 53, 0.18);
+  background: var(--sand);
+  border: 1px solid rgba(184, 144, 71, 0.22);
   border-radius: 0.9rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -431,8 +470,8 @@ a.contact-card__item:hover {
 .rsvp-input:focus,
 .rsvp-textarea:focus {
   outline: none;
-  border-color: var(--terracotta);
-  box-shadow: 0 0 0 3px rgba(166, 75, 49, 0.14);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.18);
 }
 
 .rsvp-input:disabled {
@@ -467,8 +506,8 @@ a.contact-card__item:hover {
   height: 2.5rem;
   flex-shrink: 0;
   color: var(--ink-soft);
-  background: #faf4e8;
-  border: 1px solid rgba(96, 78, 53, 0.18);
+  background: var(--sand);
+  border: 1px solid rgba(184, 144, 71, 0.24);
   border-radius: 9999px;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -476,8 +515,8 @@ a.contact-card__item:hover {
 
 .rsvp-stepper__btn:hover:not(:disabled) {
   color: #fff;
-  background: var(--terracotta);
-  border-color: var(--terracotta);
+  background: var(--gold);
+  border-color: var(--gold);
 }
 
 .rsvp-stepper__btn:disabled {
@@ -494,7 +533,7 @@ a.contact-card__item:hover {
 .rsvp-error {
   margin: 0.35rem 0 0;
   font-size: 0.82rem;
-  color: var(--terracotta-deep);
+  color: var(--gold-deep);
 }
 
 .rsvp-choice {
@@ -511,21 +550,21 @@ a.contact-card__item:hover {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  background: #faf4e8;
-  border: 1px solid rgba(96, 78, 53, 0.18);
+  background: var(--sand);
+  border: 1px solid rgba(184, 144, 71, 0.22);
   border-radius: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .rsvp-choice__option:hover {
-  border-color: rgba(166, 75, 49, 0.45);
+  border-color: rgba(197, 160, 89, 0.5);
 }
 
 .rsvp-choice__option--active {
   color: #fff;
-  background: var(--terracotta);
-  border-color: var(--terracotta);
+  background: var(--gold);
+  border-color: var(--gold);
 }
 
 .rsvp-submit {
@@ -539,16 +578,16 @@ a.contact-card__item:hover {
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  background: var(--terracotta);
+  background: var(--gold);
   border: none;
   border-radius: 999px;
-  box-shadow: 0 12px 24px -12px rgba(138, 59, 36, 0.55);
+  box-shadow: 0 12px 24px -12px rgba(150, 112, 55, 0.55);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .rsvp-submit:hover {
-  background: var(--terracotta-deep);
+  background: var(--gold-deep);
   transform: translateY(-2px);
 }
 
@@ -590,8 +629,8 @@ a.contact-card__item:hover {
   font-weight: 600;
   letter-spacing: 0.06em;
   color: #fff;
-  background: var(--terracotta);
-  box-shadow: 0 8px 16px -10px rgba(138, 59, 36, 0.6);
+  background: var(--gold);
+  box-shadow: 0 8px 16px -10px rgba(150, 112, 55, 0.6);
 }
 
 .wishes__bubble {
@@ -600,9 +639,9 @@ a.contact-card__item:hover {
   min-width: 0;
   padding: 0.85rem 1.1rem;
   background: #fff;
-  border: 1px solid rgba(96, 78, 53, 0.12);
+  border: 1px solid rgba(120, 100, 70, 0.14);
   border-radius: 1.1rem;
-  box-shadow: 0 10px 24px -18px rgba(96, 78, 53, 0.4);
+  box-shadow: 0 10px 24px -18px rgba(120, 100, 70, 0.4);
 }
 
 .wishes__bubble::before {
@@ -613,8 +652,8 @@ a.contact-card__item:hover {
   width: 12px;
   height: 12px;
   background: #fff;
-  border-left: 1px solid rgba(96, 78, 53, 0.12);
-  border-bottom: 1px solid rgba(96, 78, 53, 0.12);
+  border-left: 1px solid rgba(120, 100, 70, 0.14);
+  border-bottom: 1px solid rgba(120, 100, 70, 0.14);
   transform: rotate(45deg);
 }
 
@@ -624,7 +663,7 @@ a.contact-card__item:hover {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
 .wishes__message {
@@ -645,15 +684,15 @@ a.contact-card__item:hover {
 }
 
 .footer a {
-  color: var(--terracotta);
+  color: var(--gold);
   text-decoration: none;
 }
 
 /* Wax seal */
-.wax-seal {
+.royal-seal {
   display: block;
   overflow: visible;
-  filter: drop-shadow(0 6px 12px rgba(138, 59, 36, 0.45));
+  filter: drop-shadow(0 6px 14px rgba(150, 112, 55, 0.5));
 }
 
 /* Intro overlay */
@@ -719,17 +758,17 @@ a.contact-card__item:hover {
   place-items: center;
   width: 3rem;
   height: 3rem;
-  border: 1px solid rgba(166, 75, 49, 0.28);
+  border: 1px solid rgba(197, 160, 89, 0.32);
   border-radius: 9999px;
-  color: var(--terracotta);
+  color: var(--gold);
   background-color: var(--card);
-  box-shadow: 0 10px 22px -8px rgba(138, 59, 36, 0.45);
+  box-shadow: 0 10px 22px -8px rgba(150, 112, 55, 0.45);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .music-toggle:hover {
-  background-color: #faf3e5;
+  background-color: var(--sand);
   transform: translateY(-2px);
 }
 
@@ -757,5 +796,9 @@ a.contact-card__item:hover {
 
   .timeline {
     max-width: 16.5rem;
+  }
+
+  .vine {
+    width: 8rem;
   }
 }

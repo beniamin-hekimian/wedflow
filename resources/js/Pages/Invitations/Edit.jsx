@@ -37,7 +37,7 @@ export default function Edit({ invitation, template, melodies = [] }) {
     <>
       <Head title="Edit Invitation" />
 
-      <div className="flex min-h-screen flex-col bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
 
         <main className="flex-1">
@@ -47,13 +47,13 @@ export default function Edit({ invitation, template, melodies = [] }) {
                 <img
                   src={`/${template.thumbnail_path}`}
                   alt={template.name}
-                  className="h-14 w-12 rounded-md object-cover ring-1 ring-gray-200"
+                  className="h-14 w-12 rounded-md object-cover ring-1 ring-border"
                 />
                 <div>
-                  <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                  <h2 className="font-display text-2xl font-semibold leading-tight text-foreground">
                     Edit Invitation
                   </h2>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {invitation.groom_name} & {invitation.bride_name}
                   </p>
                 </div>
@@ -61,7 +61,7 @@ export default function Edit({ invitation, template, melodies = [] }) {
 
               <Link
                 href={route("invitations.index")}
-                className="text-sm text-gray-500 transition hover:text-gray-700"
+                className="text-sm text-muted-foreground transition hover:text-foreground"
               >
                 &larr; Back to invitations
               </Link>

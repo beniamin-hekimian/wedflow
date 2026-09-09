@@ -11,10 +11,8 @@ class UserController extends Controller
 {
     private const ROLES = ['admin', 'customer'];
 
-    private const VERIFIED_FILTERS = ['verified', 'unverified'];
-
     private const SORTABLE = [
-        'name', 'email', 'role', 'email_verified_at', 'invitations_count', 'created_at',
+        'name', 'email', 'role', 'invitations_count', 'created_at',
     ];
 
     public function index(Request $request)
@@ -22,11 +20,6 @@ class UserController extends Controller
         $role = $request->query('role');
         if (! in_array($role, self::ROLES, true)) {
             $role = null;
-        }
-
-        $verified = $request->query('verified');
-        if (! in_array($verified, self::VERIFIED_FILTERS, true)) {
-            $verified = null;
         }
 
         $sort = $request->query('sort', 'created_at');
@@ -43,12 +36,6 @@ class UserController extends Controller
 
         if ($role) {
             $query->where('role', $role);
-        }
-
-        if ($verified === 'verified') {
-            $query->whereNotNull('email_verified_at');
-        } elseif ($verified === 'unverified') {
-            $query->whereNull('email_verified_at');
         }
 
         if ($request->filled('search')) {
@@ -69,7 +56,6 @@ class UserController extends Controller
             'users' => $users,
             'filters' => [
                 'role' => $role,
-                'verified' => $verified,
                 'search' => $request->query('search'),
                 'sort' => $sort,
                 'direction' => $direction,
@@ -108,9 +94,6 @@ class UserController extends Controller
         foreach (self::ROLES as $role) {
             $result[$role] = $counts[$role] ?? 0;
         }
-
-        $result['verified'] = User::whereNotNull('email_verified_at')->count();
-        $result['unverified'] = User::whereNull('email_verified_at')->count();
 
         return $result;
     }

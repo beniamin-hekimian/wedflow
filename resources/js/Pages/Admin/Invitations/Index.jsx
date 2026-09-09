@@ -130,10 +130,10 @@ export default function Index({ invitations, filters, statusCounts }) {
 
       <AdminLayout>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Invitations
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage every invitation and its status.
           </p>
         </div>
@@ -148,8 +148,8 @@ export default function Index({ invitations, filters, statusCounts }) {
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
                   (!filters.status && tab.key === "") ||
                     filters.status === tab.key
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground ring-1 ring-border hover:bg-muted",
                 )}
               >
                 {tab.label}
@@ -159,7 +159,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                     (!filters.status && tab.key === "") ||
                       filters.status === tab.key
                       ? "bg-white/20 text-white"
-                      : "bg-gray-100 text-gray-500",
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {tab.count ?? 0}
@@ -178,7 +178,7 @@ export default function Index({ invitations, filters, statusCounts }) {
             )}
 
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 value={search}
@@ -190,14 +190,14 @@ export default function Index({ invitations, filters, statusCounts }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+        <div className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
           {invitations.data.length === 0 ? (
             <Card>
               <CardContent className="py-16 text-center">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   No invitations found
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Try adjusting your filters or search.
                 </p>
               </CardContent>
@@ -205,8 +205,8 @@ export default function Index({ invitations, filters, statusCounts }) {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-border">
+                  <thead className="bg-muted/50">
                     <tr>
                       {columns.map((column) => (
                         <SortableTh
@@ -219,38 +219,38 @@ export default function Index({ invitations, filters, statusCounts }) {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-border bg-card">
                     {invitations.data.map((invitation) => (
                       <tr
                         key={invitation.id}
-                        className="transition hover:bg-gray-50"
+                        className="transition hover:bg-muted"
                       >
                         <td className="max-w-sm px-6 py-4">
                           <a
                             href={`/${invitation.slug}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-sm font-medium text-gray-900 transition hover:text-blue-600"
+                            className="text-sm font-medium text-foreground transition hover:text-primary"
                           >
                             {invitation.groom_name} & {invitation.bride_name}
                           </a>
-                          <p className="mt-0.5 text-xs text-gray-500">
+                          <p className="mt-0.5 text-xs text-muted-foreground">
                             <span className="tabular-nums">#{invitation.id}</span>
                             {invitation.venue_name && ` · ${invitation.venue_name}`}
                           </p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-gray-900">
+                          <p className="text-sm text-foreground">
                             {invitation.user?.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {invitation.user?.email}
                           </p>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {invitation.template?.name ?? "—"}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {formatDate(invitation.event_date)}
                         </td>
                         <td className="px-6 py-4">
@@ -279,7 +279,7 @@ export default function Index({ invitations, filters, statusCounts }) {
                             </SelectContent>
                           </Select>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {formatDate(invitation.created_at)}
                         </td>
                       </tr>

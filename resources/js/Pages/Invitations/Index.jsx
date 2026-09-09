@@ -59,13 +59,13 @@ export default function Index({ invitations = [] }) {
     <>
       <Head title="My Invitations" />
 
-      <div className="flex min-h-screen flex-col bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
 
         <main className="flex-1">
           <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-xl font-semibold leading-tight text-gray-800">
+              <h2 className="font-display text-2xl font-semibold leading-tight text-foreground">
                 My Invitations
               </h2>
               <Link href={route("templates.index")}>
@@ -96,20 +96,20 @@ export default function Index({ invitations = [] }) {
                         <img
                           src={`/${invitation.template?.thumbnail_path}`}
                           alt={invitation.template?.name}
-                          className="h-16 w-12 rounded-md object-cover ring-1 ring-gray-200"
+                          className="h-16 w-12 rounded-md object-cover ring-1 ring-border"
                         />
                         <div>
                           <div className="flex items-center gap-1.5">
                             <Link
                               href={`/${invitation.slug}`}
-                              className="font-bold text-gray-900 transition hover:text-blue-600"
+                              className="font-bold text-foreground transition hover:text-primary"
                             >
                               {invitation.groom_name} & {invitation.bride_name}
                             </Link>
                             <button
                               type="button"
                               onClick={() => copyLink(invitation)}
-                              className="text-gray-400 transition hover:text-gray-600"
+                              className="text-muted-foreground transition hover:text-foreground"
                               aria-label="Copy invitation link"
                             >
                               {copiedId === invitation.id ? (
@@ -119,7 +119,7 @@ export default function Index({ invitations = [] }) {
                               )}
                             </button>
                           </div>
-                          <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <CalendarDays className="size-4" />
                               {formatDate(invitation.event_date)}
@@ -187,8 +187,8 @@ export default function Index({ invitations = [] }) {
         maxWidth="sm"
       >
         <div className="p-6">
-          <h3 className="text-lg font-medium text-gray-900">Delete invitation?</h3>
-          <p className="mt-2 text-sm text-gray-600">
+          <h3 className="font-display text-lg font-medium text-foreground">Delete invitation?</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
             Are you sure you want to delete the invitation for{" "}
             {deleteTarget?.groom_name} & {deleteTarget?.bride_name}? This action
             cannot be undone.

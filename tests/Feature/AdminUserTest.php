@@ -73,31 +73,7 @@ class AdminUserTest extends TestCase
                 ->where('users.last_page', 2)
                 ->where('roleCounts.total', 13)
                 ->where('roleCounts.customer', 12)
-                ->where('roleCounts.admin', 1)
-                ->where('roleCounts.verified', 13)
-                ->where('roleCounts.unverified', 0));
-    }
-
-    public function test_admin_can_filter_users_by_verification_status(): void
-    {
-        User::factory()->count(3)->create();
-        User::factory()->count(2)->unverified()->create();
-
-        $this->actingAs($this->admin())
-            ->get(route('admin.users.index', ['verified' => 'unverified']))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->where('filters.verified', 'unverified')
-                ->where('users.total', 2)
-                ->where('users.data.0.email_verified_at', null));
-
-        $this->actingAs($this->admin())
-            ->get(route('admin.users.index', ['verified' => 'verified']))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->where('filters.verified', 'verified')
-                ->where('users.total', 5)
-                ->where('users.data.0.email_verified_at', fn ($value) => $value !== null));
+                ->where('roleCounts.admin', 1));
     }
 
     public function test_admin_can_filter_users_by_role(): void

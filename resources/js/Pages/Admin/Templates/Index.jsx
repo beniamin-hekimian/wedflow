@@ -97,10 +97,10 @@ export default function Index({ templates, filters, usageCounts }) {
 
       <AdminLayout>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Templates
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage every template and how it is being used.
           </p>
         </div>
@@ -115,8 +115,8 @@ export default function Index({ templates, filters, usageCounts }) {
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
                   (!filters.usage && tab.key === "") ||
                     filters.usage === tab.key
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground ring-1 ring-border hover:bg-muted",
                 )}
               >
                 {tab.label}
@@ -126,7 +126,7 @@ export default function Index({ templates, filters, usageCounts }) {
                     (!filters.usage && tab.key === "") ||
                       filters.usage === tab.key
                       ? "bg-white/20 text-white"
-                      : "bg-gray-100 text-gray-500",
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {tab.count ?? 0}
@@ -145,7 +145,7 @@ export default function Index({ templates, filters, usageCounts }) {
             )}
 
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 value={search}
@@ -157,14 +157,14 @@ export default function Index({ templates, filters, usageCounts }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+        <div className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
           {templates.data.length === 0 ? (
             <Card>
               <CardContent className="py-16 text-center">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   No templates found
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Try adjusting your filters or search.
                 </p>
               </CardContent>
@@ -172,8 +172,8 @@ export default function Index({ templates, filters, usageCounts }) {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-border">
+                  <thead className="bg-muted/50">
                     <tr>
                       {columns.map((column) =>
                         column.sortable ? (
@@ -187,7 +187,7 @@ export default function Index({ templates, filters, usageCounts }) {
                         ) : (
                           <th
                             key={column.key}
-                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground"
                           >
                             {column.label}
                           </th>
@@ -195,24 +195,24 @@ export default function Index({ templates, filters, usageCounts }) {
                       )}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-border bg-card">
                     {templates.data.map((template) => (
                       <tr
                         key={template.id}
-                        className="transition hover:bg-gray-50"
+                        className="transition hover:bg-muted"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                           <img
                             src={`/${template.thumbnail_path}`}
                             alt={template.name}
-                            className="h-16 w-12 shrink-0 rounded-md object-cover ring-1 ring-gray-200"
+                            className="h-16 w-12 shrink-0 rounded-md object-cover ring-1 ring-border"
                           />
                           <div>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-foreground">
                               {template.name}
                             </p>
-                            <p className="mt-0.5 text-xs text-gray-500">
+                            <p className="mt-0.5 text-xs text-muted-foreground">
                               <span className="tabular-nums">#{template.id}</span>
                               {` · ${template.slug}`}
                             </p>
@@ -220,16 +220,16 @@ export default function Index({ templates, filters, usageCounts }) {
                         </div>
                       </td>
                       <td className="max-w-sm px-6 py-4">
-                        <p className="line-clamp-2 text-sm text-gray-600">
+                        <p className="line-clamp-2 text-sm text-muted-foreground">
                           {template.description || "—"}
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                        <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums text-foreground">
                           {template.invitations_count}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         {formatDate(template.created_at)}
                       </td>
                       </tr>

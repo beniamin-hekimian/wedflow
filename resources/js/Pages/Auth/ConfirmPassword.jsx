@@ -19,13 +19,13 @@ export default function ConfirmPassword() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Confirm Password" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
-          <div className="mb-4 text-sm text-gray-600">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
+          <div className="mb-4 text-sm text-muted-foreground">
             This is a secure area of the application. Please confirm your
             password before continuing.
           </div>

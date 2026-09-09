@@ -8,15 +8,15 @@ export default function TemplatesIndex({ templates }) {
     <>
       <Head title="Templates" />
 
-      <div className="flex min-h-screen flex-col bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
 
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h1 className="font-display text-4xl font-bold text-foreground">
               Choose Your Invitation Template
-            </h2>
-            <p className="mt-2 text-gray-600">
+            </h1>
+            <p className="mt-2 text-muted-foreground">
               Elegant, ready-to-use templates for weddings
             </p>
           </div>
@@ -25,9 +25,9 @@ export default function TemplatesIndex({ templates }) {
             {templates.map((template) => (
               <div
                 key={template.id}
-                className="group overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200 transition hover:shadow-md"
+                className="group overflow-hidden rounded-lg bg-card shadow-sm ring-1 ring-border transition hover:shadow-md"
               >
-                <div className="aspect-[3/4] overflow-hidden bg-gray-200">
+                <div className="aspect-[3/4] overflow-hidden bg-muted">
                   <img
                     src={`/${template.thumbnail_path}`}
                     alt={template.name}
@@ -36,10 +36,10 @@ export default function TemplatesIndex({ templates }) {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="font-display text-lg font-semibold text-foreground">
                     {template.name}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-600">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {template.description}
                   </p>
 
@@ -49,7 +49,7 @@ export default function TemplatesIndex({ templates }) {
                     })}
                   >
                     <Button className="mt-4 w-full">
-                      Prepare your invitation with this template
+                      Prepare your invitation
                     </Button>
                   </Link>
                 </div>

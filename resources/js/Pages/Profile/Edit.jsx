@@ -7,18 +7,18 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 
 export default function Edit({ mustVerifyEmail, status }) {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Profile" />
       <Navbar />
 
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-xl font-semibold leading-tight text-gray-800">
+          <h1 className="mb-8 font-display text-3xl font-semibold leading-tight text-foreground">
             Profile
-          </h2>
+          </h1>
 
           <div className="space-y-6">
-            <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div className="bg-card p-4 shadow-sm sm:rounded-lg sm:p-8">
               <UpdateProfileInformationForm
                 mustVerifyEmail={mustVerifyEmail}
                 status={status}
@@ -26,11 +26,11 @@ export default function Edit({ mustVerifyEmail, status }) {
               />
             </div>
 
-            <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div className="bg-card p-4 shadow-sm sm:rounded-lg sm:p-8">
               <UpdatePasswordForm className="max-w-xl" />
             </div>
 
-            <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div className="bg-card p-4 shadow-sm sm:rounded-lg sm:p-8">
               <DeleteUserForm className="max-w-xl" />
             </div>
           </div>

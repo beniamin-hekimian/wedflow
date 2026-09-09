@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicInvitationController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\TemplateController;
+use App\Models\Template;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +23,7 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'templates' => Template::orderBy('id')->get(),
     ]);
 })->name('home');
 

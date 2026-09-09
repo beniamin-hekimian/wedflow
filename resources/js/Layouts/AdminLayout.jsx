@@ -54,13 +54,13 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
 
       <div className="flex flex-1">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white md:flex">
+        <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
           <div className="px-4 py-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Admin Panel
             </p>
           </div>
@@ -72,8 +72,8 @@ export default function AdminLayout({ children }) {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition ${
                   item.active
-                    ? 'bg-gray-200 text-gray-900'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <item.icon className="size-4 shrink-0" />
@@ -82,7 +82,7 @@ export default function AdminLayout({ children }) {
             ))}
           </nav>
 
-          <div className="space-y-2 border-t border-gray-200 p-4">
+          <div className="space-y-2 border-t border-border p-4">
             <Link href={route('home')}>
               <Button variant="ghost" size="sm" className="w-full justify-start">
                 Back to site

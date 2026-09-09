@@ -16,13 +16,13 @@ export default function ForgotPassword({ status }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Forgot Password" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
-          <div className="mb-4 text-sm text-gray-600">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
+          <div className="mb-4 text-sm text-muted-foreground">
             Forgot your password? No problem. Just let us know your email
             address and we will email you a password reset link that will allow
             you to choose a new one.

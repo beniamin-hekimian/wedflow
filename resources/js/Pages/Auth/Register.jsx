@@ -22,17 +22,17 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Register" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="font-display text-3xl font-bold text-foreground">
               Create your account
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Sign up to start designing your wedding invitation.
             </p>
           </div>
@@ -117,7 +117,7 @@ export default function Register() {
             <div className="mt-4 flex items-center justify-end">
               <Link
                 href={route('login')}
-                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Already registered?
               </Link>

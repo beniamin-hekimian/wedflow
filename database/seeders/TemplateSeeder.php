@@ -30,8 +30,19 @@ class TemplateSeeder extends Seeder
                 'name' => 'Royal',
                 'slug' => 'royal',
                 'description' => 'A luxurious royal wedding invitation template',
-                'thumbnail_path' => 'templates-assets/royal/thumbnail.jpeg',
+                'thumbnail_path' => 'templates-assets/royal/thumbnail.jpg',
                 'intro_video_path' => 'templates-assets/royal/intro.mp4',
+            ]
+        );
+
+        Template::updateOrCreate(
+            ['id' => 3],
+            [
+                'name' => 'Majestic',
+                'slug' => 'majestic',
+                'description' => 'A soft romantic wedding invitation template',
+                'thumbnail_path' => 'templates-assets/majestic/thumbnail.jpg',
+                'intro_video_path' => 'templates-assets/majestic/intro.mp4',
             ]
         );
     }

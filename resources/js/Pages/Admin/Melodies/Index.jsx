@@ -114,10 +114,10 @@ export default function Index({ melodies, filters, usageCounts }) {
 
       <AdminLayout>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Melodies
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage every wedding melody and how it is being used.
           </p>
         </div>
@@ -132,8 +132,8 @@ export default function Index({ melodies, filters, usageCounts }) {
                   "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition",
                   (!filters.usage && tab.key === "") ||
                     filters.usage === tab.key
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50",
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground ring-1 ring-border hover:bg-muted",
                 )}
               >
                 {tab.label}
@@ -143,7 +143,7 @@ export default function Index({ melodies, filters, usageCounts }) {
                     (!filters.usage && tab.key === "") ||
                       filters.usage === tab.key
                       ? "bg-white/20 text-white"
-                      : "bg-gray-100 text-gray-500",
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {tab.count ?? 0}
@@ -162,7 +162,7 @@ export default function Index({ melodies, filters, usageCounts }) {
             )}
 
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 value={search}
@@ -174,14 +174,14 @@ export default function Index({ melodies, filters, usageCounts }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+        <div className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
           {melodies.data.length === 0 ? (
             <Card>
               <CardContent className="py-16 text-center">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   No melodies found
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Try adjusting your filters or search.
                 </p>
               </CardContent>
@@ -189,8 +189,8 @@ export default function Index({ melodies, filters, usageCounts }) {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-border">
+                  <thead className="bg-muted/50">
                     <tr>
                       {columns.map((column) => (
                         <SortableTh
@@ -203,9 +203,9 @@ export default function Index({ melodies, filters, usageCounts }) {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-border bg-card">
                     {melodies.data.map((melody) => (
-                      <tr key={melody.id} className="transition hover:bg-gray-50">
+                      <tr key={melody.id} className="transition hover:bg-muted">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <button
@@ -216,7 +216,7 @@ export default function Index({ melodies, filters, usageCounts }) {
                                   ? "Pause melody"
                                   : "Play melody"
                               }
-                              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 hover:text-gray-900"
+                              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition hover:bg-primary/20 hover:text-primary"
                             >
                               {playingId === melody.id ? (
                                 <Pause className="size-4" />
@@ -225,10 +225,10 @@ export default function Index({ melodies, filters, usageCounts }) {
                               )}
                             </button>
                             <div>
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-sm font-medium text-foreground">
                                 {melody.name}
                               </p>
-                              <p className="mt-0.5 text-xs text-gray-500">
+                              <p className="mt-0.5 text-xs text-muted-foreground">
                                 <span className="tabular-nums">#{melody.id}</span>
                                 {` · ${melody.file_path}`}
                               </p>
@@ -236,11 +236,11 @@ export default function Index({ melodies, filters, usageCounts }) {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                          <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums text-foreground">
                             {melody.invitations_count}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {formatDate(melody.created_at)}
                         </td>
                       </tr>

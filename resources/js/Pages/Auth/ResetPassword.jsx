@@ -22,12 +22,12 @@ export default function ResetPassword({ token, email }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-background">
       <Head title="Reset Password" />
       <Navbar />
 
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-sm">
           <form onSubmit={submit}>
             <div>
               <InputLabel htmlFor="email" value="Email" />

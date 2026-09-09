@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapPin, Music, Pause } from "lucide-react";
 
 import RsvpCard from "../Components/RsvpCard";
-import "../../../../css/invitations/classic.css";
+import "../../../../css/invitations/majestic.css";
 
 const INTRO_FADE_MS = 1200;
 
@@ -37,42 +37,117 @@ function buildSealPath() {
   return `${d} Z`;
 }
 
-function WaxSeal() {
+function MajesticSeal() {
   const sealPath = useMemo(buildSealPath, []);
 
   return (
     <svg
-      viewBox="0 0 100 100"
-      className="wax-seal"
+      viewBox="0 0 110 110"
+      className="majestic-seal"
       aria-hidden="true"
     >
-      <path d={sealPath} fill="#a64b31" />
+      <defs>
+        <radialGradient id="majesticSealGrad" cx="0.38" cy="0.32" r="0.95">
+          <stop offset="0%" stopColor="#f2c6c6" />
+          <stop offset="45%" stopColor="#e5a9a9" />
+          <stop offset="80%" stopColor="#d49292" />
+          <stop offset="100%" stopColor="#c87d8a" />
+        </radialGradient>
+        <radialGradient id="majesticSealSheen" cx="0.35" cy="0.28" r="0.9">
+          <stop offset="0%" stopColor="#fce8e8" stopOpacity="0.95" />
+          <stop offset="45%" stopColor="#e5a9a9" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#d49292" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      <path d={sealPath} transform="translate(5 5)" fill="url(#majesticSealGrad)" />
       <path
         d={sealPath}
-        fill="none"
-        stroke="#8a3b24"
-        strokeWidth="0.75"
-        opacity="0.55"
+        transform="translate(5 5)"
+        fill="url(#majesticSealSheen)"
+        opacity="0.85"
       />
-      <circle cx="50" cy="50" r="35" fill="none" stroke="#8a3b24" strokeWidth="1.4" opacity="0.6" />
-      <circle cx="50" cy="50" r="33" fill="none" stroke="#8a3b24" strokeWidth="0.5" opacity="0.5" />
-      <g fill="none" stroke="#7d331f" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M50 34 C57 30 63 35 59 42 C56 47 48 47 44 42 C41 36 46 29 50 30" />
-        <path d="M50 40 C55 39 58 43 55 47 C53 50 48 49 46 46 C44 43 47 40 50 40" />
-        <path d="M50 46 C52.5 45.8 53.5 47.5 52 49.5 C50.5 51 48.5 50.5 48 49 C47.5 47.5 48 46.2 50 46 Z" />
-        <path d="M44 38 C40 41 38 45 41.5 47 C45 49 47.5 46 46 42.5" />
-        <path d="M56 38 C60 41 61 46 57.5 47.5 C54 49 51.5 45.5 53 42" />
+      <path
+        d={sealPath}
+        transform="translate(5 5)"
+        fill="none"
+        stroke="#b9717c"
+        strokeWidth="0.9"
+        opacity="0.5"
+      />
+      <circle cx="55" cy="55" r="43" fill="none" stroke="#c98a92" strokeWidth="1.2" opacity="0.55" />
+      <circle cx="55" cy="55" r="40" fill="none" stroke="#c98a92" strokeWidth="0.5" opacity="0.45" />
+      <g
+        fill="none"
+        stroke="#bf6f78"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.85"
+        transform="translate(-5.5 -14.3) scale(0.55)"
+      >
+        <path d="M110 136 C 118 131 126 127 122 118 C 119 111 109 108 104 113 C 100 118 104 134 110 136" />
+        <path d="M110 129 C 115 128 119 131 116 135 C 114 139 107 139 104 135 C 102 131 105 127 110 129" />
+        <path d="M110 121 C 112 120 114 122 113 124 C 112 126 110 126 109 125 C 108 124 108 122 110 121 Z" />
+        <path d="M104 116 C 99 119 97 124 101 127 C 105 130 108 127 107 123 C 106 119 107 116 104 116" />
+        <path d="M116 117 C 122 118 124 123 120 127 C 116 131 112 128 113 124 C 113 120 113 116 116 117" />
+        <path d="M104 134 C 100 138 98 143 102 145 C 107 147 109 143 108 140 C 106 137 106 134 104 134" />
+        <path d="M116 135 C 121 137 122 142 118 145 C 114 147 112 143 113 140 C 113 137 114 135 116 135" />
       </g>
       <ellipse
-        cx="50"
-        cy="66"
-        rx="6"
-        ry="1.8"
-        fill="none"
-        stroke="#7d331f"
-        strokeWidth="1.1"
-        opacity="0.6"
-        transform="rotate(-6 50 66)"
+        cx="70"
+        cy="34"
+        rx="9"
+        ry="4"
+        fill="#ffffff"
+        opacity="0.4"
+        transform="rotate(-24 70 34)"
+      />
+      <circle cx="30" cy="42" r="1.1" fill="#d4af37" opacity="0.55" />
+      <circle cx="78" cy="70" r="1.3" fill="#d4af37" opacity="0.45" />
+      <circle cx="40" cy="82" r="1" fill="#d4af37" opacity="0.5" />
+      <circle cx="84" cy="84" r="0.8" fill="#d4af37" opacity="0.4" />
+    </svg>
+  );
+}
+
+function BlushSprig({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 170 200"
+      fill="none"
+      className={`sprig${className ? ` ${className}` : ""}`}
+      aria-hidden="true"
+    >
+      <path
+        d="M162 14 C 138 58, 146 96, 104 118 S 48 136, 12 194"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <g transform="translate(124 46) rotate(-38)">
+        <path d="M-22 0 C -13 -10, 7 -12, 22 0 C 7 12, -13 10, -22 0 Z" />
+        <path d="M-18 0 L 16 0" strokeWidth="0.7" />
+      </g>
+      <g transform="translate(134 80) rotate(32)">
+        <path d="M-18 0 C -11 -9, 6 -10, 18 0 C 6 10, -11 9, -18 0 Z" />
+        <path d="M-15 0 L 13 0" strokeWidth="0.7" />
+      </g>
+      <g transform="translate(98 106) rotate(-28)">
+        <path d="M-20 0 C -12 -10, 6 -11, 20 0 C 6 11, -12 10, -20 0 Z" />
+        <path d="M-17 0 L 15 0" strokeWidth="0.7" />
+      </g>
+      <g transform="translate(88 138) rotate(34)">
+        <path d="M-14 0 C -9 -8, 5 -9, 14 0 C 5 9, -9 8, -14 0 Z" />
+        <path d="M-12 0 L 10 0" strokeWidth="0.7" />
+      </g>
+      <circle cx="142" cy="60" r="1.6" />
+      <circle cx="150" cy="72" r="1.2" />
+      <circle cx="62" cy="152" r="1.6" />
+      <circle cx="72" cy="146" r="1.1" />
+      <circle cx="14" cy="178" r="1.4" strokeWidth="1.1" />
+      <path
+        d="M120 22 C 112 22, 110 30, 116 32 C 112 36, 116 42, 122 38 C 126 42, 132 36, 128 31 C 133 28, 128 21, 120 22 Z"
+        strokeWidth="1"
       />
     </svg>
   );
@@ -182,7 +257,7 @@ const formatTime = (value) => {
   return `${display}:${minute} ${suffix}`;
 };
 
-export default function Classic({ invitation, wishes = [] }) {
+export default function Majestic({ invitation, wishes = [] }) {
   const { template, melody, events = [], photos = [] } = invitation;
 
   const introSrc = template?.intro_video_path ? `/${template.intro_video_path}` : null;
@@ -255,7 +330,7 @@ export default function Classic({ invitation, wishes = [] }) {
         <link rel="preconnect" href="https://fonts.bunny.net" />
         <link
           rel="stylesheet"
-          href="https://fonts.bunny.net/css?family=cormorant-garamond:400,500,600,700&family=great-vibes:400&family=lora:400,500,600&display=swap"
+          href="https://fonts.bunny.net/css?family=montecarlo:400&family=playfair-display:400,500,600&family=cormorant-garamond:400,500,600&display=swap"
         />
       </Head>
 
@@ -287,11 +362,14 @@ export default function Classic({ invitation, wishes = [] }) {
       )}
 
       <div className="invitation-page">
+        <BlushSprig className="sprig--corner-tl" />
+        <BlushSprig className="sprig--corner-br" />
+
         <div className="invitation-page__inner">
           <header className="hero">
             <Reveal>
               <div className="hero__seal">
-                <WaxSeal />
+                <MajesticSeal />
               </div>
               <p className="hero__overline">Together with love</p>
               <h1 className="serif-display hero__names">

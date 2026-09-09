@@ -101,4 +101,50 @@ class PublicInvitationTest extends TestCase
         $this->get(route('invitations.show', 'does-not-exist'))
             ->assertNotFound();
     }
+
+    public function test_active_invitation_renders_the_royal_template(): void
+    {
+        $royal = Template::create([
+            'name' => 'Royal',
+            'slug' => 'royal',
+            'description' => 'A luxurious royal wedding invitation template',
+            'thumbnail_path' => 'templates-assets/royal/thumbnail.jpg',
+            'intro_video_path' => 'templates-assets/royal/intro.mp4',
+        ]);
+
+        $user = User::factory()->create();
+        $invitation = $this->invitation($user, [
+            'template_id' => $royal->id,
+            'status' => 'active',
+        ]);
+
+        $this->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Royal')
+                ->where('invitation.template.slug', 'royal'));
+    }
+
+    public function test_active_invitation_renders_the_majestic_template(): void
+    {
+        $majestic = Template::create([
+            'name' => 'Majestic',
+            'slug' => 'majestic',
+            'description' => 'A soft romantic wedding invitation template',
+            'thumbnail_path' => 'templates-assets/majestic/thumbnail.jpg',
+            'intro_video_path' => 'templates-assets/majestic/intro.mp4',
+        ]);
+
+        $user = User::factory()->create();
+        $invitation = $this->invitation($user, [
+            'template_id' => $majestic->id,
+            'status' => 'active',
+        ]);
+
+        $this->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Majestic')
+                ->where('invitation.template.slug', 'majestic'));
+    }
 }

@@ -17,9 +17,20 @@ export default {
         extend: {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+                display: ['"Playfair Display"', 'Georgia', 'serif'],
             },
             // 2. Add shadcn CSS variables to remove the "border-border" error
             colors: {
+                wax: {
+                    ivory: "#faf7f2",
+                    cream: "#f4efe6",
+                    card: "#fffcf6",
+                    gold: "#c5a059",
+                    goldDeep: "#b89047",
+                    ink: "#4b4233",
+                    inkSoft: "#6e6351",
+                    inkFaint: "#94876f",
+                },
                 border: "var(--border)",
                 input: "var(--input)",
                 ring: "var(--ring)",

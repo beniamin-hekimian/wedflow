@@ -92,7 +92,7 @@ class AdminDashboardTest extends TestCase
                 ->where('stats.active', 2)
                 ->where('stats.pending', 1)
                 ->where('stats.users', 2)
-                ->where('stats.verified', 2));
+                ->where('stats.admins', 1));
     }
 
     public function test_top_three_invitations_are_ordered_by_most_received_rsvps(): void

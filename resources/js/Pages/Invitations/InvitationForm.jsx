@@ -331,7 +331,7 @@ export default function InvitationForm({
             {existing.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative aspect-square overflow-hidden rounded-md ring-1 ring-gray-200"
+                className="group relative aspect-square overflow-hidden rounded-md ring-1 ring-border"
               >
                 <img
                   src={`/storage/${photo.photo_path}`}
@@ -352,7 +352,7 @@ export default function InvitationForm({
             {form.data.photos.map((photo, index) => (
               <div
                 key={`${photo.name}-${index}`}
-                className="group relative aspect-square overflow-hidden rounded-md ring-1 ring-gray-200"
+                className="group relative aspect-square overflow-hidden rounded-md ring-1 ring-border"
               >
                 <img
                   src={getPhotoPreview(photo)}
@@ -427,7 +427,7 @@ export default function InvitationForm({
       <Card>
         <CardContent className="space-y-3 pt-6">
           {form.progress && (
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full bg-primary transition-all"
                 style={{ width: `${form.progress.percentage}%` }}

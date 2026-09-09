@@ -8,7 +8,7 @@ function PageButton({ href, active, disabled, children, ...props }) {
     return (
       <span
         className={cn(
-          'inline-flex h-9 min-w-9 items-center justify-center rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-300',
+          'inline-flex h-9 min-w-9 items-center justify-center rounded-md border border-border px-3 text-sm font-medium text-muted-foreground',
           props?.className,
         )}
       >
@@ -25,7 +25,7 @@ function PageButton({ href, active, disabled, children, ...props }) {
         'inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-sm font-medium transition',
         active
           ? 'border-primary bg-primary text-primary-foreground'
-          : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50',
+          : 'border-border bg-card text-foreground hover:bg-muted',
         props?.className,
       )}
     >
@@ -49,8 +49,8 @@ export default function Pagination({ pagination }) {
   const pages = links.slice(1, -1);
 
   return (
-    <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 px-4 py-3 sm:flex-row sm:px-6">
-      <p className="text-sm text-gray-500">
+    <div className="flex flex-col items-center justify-between gap-4 border-t border-border px-4 py-3 sm:flex-row sm:px-6">
+      <p className="text-sm text-muted-foreground">
         Showing <span className="font-medium">{meta.from ?? 0}</span> to{' '}
         <span className="font-medium">{meta.to ?? 0}</span> of{' '}
         <span className="font-medium">{meta.total ?? 0}</span> results

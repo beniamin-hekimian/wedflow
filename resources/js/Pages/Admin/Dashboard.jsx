@@ -1,7 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import {
   Activity,
-  BadgeCheck,
   CalendarDays,
   CheckCircle2,
   Clock,
@@ -41,9 +40,9 @@ const statItems = [
     icon: Users,
   },
   {
-    key: 'verified',
-    label: 'Verified users',
-    icon: BadgeCheck,
+    key: 'admins',
+    label: 'Admins',
+    icon: ShieldCheck,
   },
 ];
 
@@ -77,11 +76,11 @@ export default function Dashboard({ stats, topInvitations }) {
 
       <AdminLayout>
         <div className="mb-6">
-          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
             <ShieldCheck className="size-6" />
             Welcome, {user?.name}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             You are signed in as an administrator.
           </p>
         </div>
@@ -90,13 +89,13 @@ export default function Dashboard({ stats, topInvitations }) {
           {statItems.map(({ key, label, icon: Icon }) => (
             <Card key={key}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-500">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {label}
                 </CardTitle>
-                <Icon className="size-4 text-gray-400" />
+                <Icon className="size-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-foreground">
                   {stats?.[key] ?? 0}
                 </p>
               </CardContent>
@@ -107,7 +106,7 @@ export default function Dashboard({ stats, topInvitations }) {
         <Card className="mt-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageSquareText className="size-4 text-gray-400" />
+              <MessageSquareText className="size-4 text-muted-foreground" />
               Top 3 invitations by RSVPs
             </CardTitle>
             <CardDescription>
@@ -116,18 +115,18 @@ export default function Dashboard({ stats, topInvitations }) {
           </CardHeader>
           <CardContent>
             {topInvitations.length === 0 ? (
-              <p className="py-8 text-center text-sm text-gray-500">
+              <p className="py-8 text-center text-sm text-muted-foreground">
                 No RSVPs received yet.
               </p>
             ) : (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-border">
                 {topInvitations.map((invitation, index) => (
                   <div
                     key={invitation.id}
                     className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-600">
+                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
                         {index + 1}
                       </span>
                       <div className="min-w-0">
@@ -135,11 +134,11 @@ export default function Dashboard({ stats, topInvitations }) {
                           href={`/${invitation.slug}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="truncate text-sm font-medium text-gray-900 transition hover:text-blue-600"
+                          className="truncate text-sm font-medium text-foreground transition hover:text-primary"
                         >
                           {invitation.groom_name} & {invitation.bride_name}
                         </a>
-                        <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                           <CalendarDays className="size-3.5" />
                           {formatDate(invitation.event_date)}
                         </p>
@@ -147,13 +146,13 @@ export default function Dashboard({ stats, topInvitations }) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2 py-0.5 text-xs font-medium text-gray-600 ring-1 ring-gray-200">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-2 py-0.5 text-xs font-medium text-muted-foreground ring-1 ring-border">
                         <span className={`size-1.5 rounded-full ${statusDotClass[invitation.status]}`} />
                         {STATUS_ITEMS[invitation.status]}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums text-foreground">
                         {invitation.responses_count}
-                        <span className="font-normal text-gray-400">
+                        <span className="font-normal text-muted-foreground">
                           RSVPs
                         </span>
                       </span>

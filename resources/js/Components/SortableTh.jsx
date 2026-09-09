@@ -11,8 +11,8 @@ export default function SortableTh({ column, sort, direction, onSort }) {
         type="button"
         onClick={() => onSort(column.key)}
         className={cn(
-          'inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wider transition hover:text-gray-900',
-          active ? 'text-gray-900' : 'text-gray-500',
+          'inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wider transition hover:text-foreground',
+          active ? 'text-foreground' : 'text-muted-foreground',
         )}
       >
         {column.label}

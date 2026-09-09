@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapPin, Music, Pause } from "lucide-react";
 
 import RsvpCard from "../Components/RsvpCard";
-import "../../../../css/invitations/classic.css";
+import "../../../../css/invitations/royal.css";
 
 const INTRO_FADE_MS = 1200;
 
@@ -37,26 +37,38 @@ function buildSealPath() {
   return `${d} Z`;
 }
 
-function WaxSeal() {
+function RoyalSeal() {
   const sealPath = useMemo(buildSealPath, []);
 
   return (
     <svg
       viewBox="0 0 100 100"
-      className="wax-seal"
+      className="royal-seal"
       aria-hidden="true"
     >
-      <path d={sealPath} fill="#a64b31" />
+      <defs>
+        <radialGradient id="royalSealSheen" cx="0.35" cy="0.28" r="0.85">
+          <stop offset="0%" stopColor="#efe0b4" stopOpacity="0.95" />
+          <stop offset="42%" stopColor="#c5a059" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#b89047" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <path d={sealPath} fill="#c5a059" />
+      <path
+        d={sealPath}
+        fill="url(#royalSealSheen)"
+        opacity="0.9"
+      />
       <path
         d={sealPath}
         fill="none"
-        stroke="#8a3b24"
+        stroke="#a8853f"
         strokeWidth="0.75"
         opacity="0.55"
       />
-      <circle cx="50" cy="50" r="35" fill="none" stroke="#8a3b24" strokeWidth="1.4" opacity="0.6" />
-      <circle cx="50" cy="50" r="33" fill="none" stroke="#8a3b24" strokeWidth="0.5" opacity="0.5" />
-      <g fill="none" stroke="#7d331f" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="50" cy="50" r="35" fill="none" stroke="#a8853f" strokeWidth="1.4" opacity="0.6" />
+      <circle cx="50" cy="50" r="33" fill="none" stroke="#a8853f" strokeWidth="0.5" opacity="0.5" />
+      <g fill="none" stroke="#8f6a2f" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
         <path d="M50 34 C57 30 63 35 59 42 C56 47 48 47 44 42 C41 36 46 29 50 30" />
         <path d="M50 40 C55 39 58 43 55 47 C53 50 48 49 46 46 C44 43 47 40 50 40" />
         <path d="M50 46 C52.5 45.8 53.5 47.5 52 49.5 C50.5 51 48.5 50.5 48 49 C47.5 47.5 48 46.2 50 46 Z" />
@@ -69,11 +81,47 @@ function WaxSeal() {
         rx="6"
         ry="1.8"
         fill="none"
-        stroke="#7d331f"
+        stroke="#8f6a2f"
         strokeWidth="1.1"
         opacity="0.6"
         transform="rotate(-6 50 66)"
       />
+    </svg>
+  );
+}
+
+function Vine({ className = "" }) {
+  const leaves = [
+    { transform: "translate(160 28) rotate(-35)" },
+    { transform: "translate(150 68) rotate(35)" },
+    { transform: "translate(130 108) rotate(-40)" },
+    { transform: "translate(92 134) rotate(30)" },
+    { transform: "translate(50 158) rotate(-35)" },
+    { transform: "translate(20 190) rotate(42)" },
+  ];
+
+  return (
+    <svg
+      viewBox="0 0 180 220"
+      fill="none"
+      className={`vine${className ? ` ${className}` : ""}`}
+      aria-hidden="true"
+    >
+      <path
+        d="M172 8 C 142 46, 150 92, 114 118 S 56 150, 8 212"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      {leaves.map((leaf, index) => (
+        <g
+          key={index}
+          className="vine__leaf"
+          transform={leaf.transform}
+        >
+          <path d="M-26 0 C -16 -12, 8 -14, 26 0 C 8 14, -16 12, -26 0 Z" />
+          <path d="M-22 0 L 20 0" strokeWidth="0.8" />
+        </g>
+      ))}
     </svg>
   );
 }
@@ -182,7 +230,7 @@ const formatTime = (value) => {
   return `${display}:${minute} ${suffix}`;
 };
 
-export default function Classic({ invitation, wishes = [] }) {
+export default function Royal({ invitation, wishes = [] }) {
   const { template, melody, events = [], photos = [] } = invitation;
 
   const introSrc = template?.intro_video_path ? `/${template.intro_video_path}` : null;
@@ -255,7 +303,7 @@ export default function Classic({ invitation, wishes = [] }) {
         <link rel="preconnect" href="https://fonts.bunny.net" />
         <link
           rel="stylesheet"
-          href="https://fonts.bunny.net/css?family=cormorant-garamond:400,500,600,700&family=great-vibes:400&family=lora:400,500,600&display=swap"
+          href="https://fonts.bunny.net/css?family=cinzel:400,500,600,700&family=cormorant-garamond:400,500,600&family=great-vibes:400&display=swap"
         />
       </Head>
 
@@ -287,11 +335,14 @@ export default function Classic({ invitation, wishes = [] }) {
       )}
 
       <div className="invitation-page">
+        <Vine className="vine--corner-tl" />
+        <Vine className="vine--corner-br" />
+
         <div className="invitation-page__inner">
           <header className="hero">
             <Reveal>
               <div className="hero__seal">
-                <WaxSeal />
+                <RoyalSeal />
               </div>
               <p className="hero__overline">Together with love</p>
               <h1 className="serif-display hero__names">
