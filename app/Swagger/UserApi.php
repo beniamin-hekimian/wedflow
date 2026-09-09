@@ -71,8 +71,8 @@ final class UserApi
         path: '/invitations/create',
         tags: ['User'],
         summary: 'Show the invitation creation form',
-        description: 'Renders the creation wizard for a chosen template. Props: `template` (Template) and'
-        . ' `melodies` (array of Melody).',
+        description: 'Renders the creation wizard for a chosen template. Props: `template` (Template),'
+        . ' `melodies` (array of Melody) and `events` (array of Event catalog types).',
         parameters: [
             new OA\Parameter(name: 'template', in: 'query', required: true, description: 'Template id to build the invitation with.', schema: new OA\Schema(type: 'integer')),
         ],
@@ -89,7 +89,7 @@ final class UserApi
         path: '/invitations',
         tags: ['User'],
         summary: 'Create an invitation',
-        description: 'Creates an invitation with event list and photo uploads as `multipart/form-data`. '
+        description: 'Creates an invitation with a catalog-based timeline and photo uploads as `multipart/form-data`. '
         . 'The slug is generated from the couple\'s names. Redirects to `invitations.index` on success.',
         requestBody: new OA\RequestBody(required: true, content: new OA\MediaType(
             mediaType: 'multipart/form-data',
@@ -110,7 +110,8 @@ final class UserApi
         tags: ['User'],
         summary: 'Show the invitation edit form',
         description: 'Renders the edit page for an owned invitation. Props: `invitation` (Invitation with'
-        . ' `template`, `melody`, `events`, `photos` loaded), `template` (Template) and `melodies`.',
+        . ' `template`, `melody`, `events` (timeline projections), `photos` loaded), `template` (Template),'
+        . ' `melodies` (array of Melody) and `events` (array of Event catalog types).',
         parameters: [
             new OA\Parameter(name: 'slug', in: 'path', required: true, description: 'Invitation slug.', schema: new OA\Schema(type: 'string')),
         ],
@@ -128,7 +129,7 @@ final class UserApi
         path: '/invitations/{slug}',
         tags: ['User'],
         summary: 'Update an invitation',
-        description: 'Updates an owned invitation as `multipart/form-data`: replays the event list, deletes'
+        description: 'Updates an owned invitation as `multipart/form-data`: replays the timeline, deletes'
         . ' removed photos, keeps `existing_photo_ids` (max 5 photos in total) and adds/uploads new ones.'
         . ' Redirects to `invitations.index` on success.',
         parameters: [

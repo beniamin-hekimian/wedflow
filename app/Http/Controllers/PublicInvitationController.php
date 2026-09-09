@@ -55,6 +55,12 @@ class PublicInvitationController extends Controller
             abort(404);
         }
 
+        $invitation->setRelation('events', $invitation->events->map(fn ($event) => [
+            'id' => $event->id,
+            'name' => $event->name,
+            'time' => $event->pivot->time,
+        ]));
+
         return [$component, $invitation];
     }
 

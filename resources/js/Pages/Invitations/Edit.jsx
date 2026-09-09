@@ -3,7 +3,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import Navbar from "@/Components/Navbar";
 import InvitationForm, { EMPTY_EVENT } from "@/Pages/Invitations/InvitationForm";
 
-export default function Edit({ invitation, template, melodies = [] }) {
+export default function Edit({ invitation, template, melodies = [], events = [] }) {
   const form = useForm({
     template_id: invitation.template_id,
     melody_id: invitation.melody_id ? String(invitation.melody_id) : "",
@@ -18,7 +18,7 @@ export default function Edit({ invitation, template, melodies = [] }) {
     events:
       (invitation.events ?? []).length > 0
         ? invitation.events.map((event) => ({
-            name: event.name,
+            event_id: String(event.id),
             time: event.time,
           }))
         : [EMPTY_EVENT, EMPTY_EVENT],
@@ -71,6 +71,7 @@ export default function Edit({ invitation, template, melodies = [] }) {
               form={form}
               template={template}
               melodies={melodies}
+              events={events}
               existingPhotos={invitation.photos ?? []}
               submitLabel="Save Changes"
               onSubmit={submit}

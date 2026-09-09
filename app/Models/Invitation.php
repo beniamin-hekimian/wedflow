@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
@@ -48,9 +49,12 @@ class Invitation extends Model
         return $this->belongsTo(Melody::class);
     }
 
-    public function events(): HasMany
+    public function events(): BelongsToMany
     {
-        return $this->hasMany(Event::class);
+        return $this->belongsToMany(Event::class, 'event_invitation')
+            ->withPivot(['time', 'position'])
+            ->withTimestamps()
+            ->orderBy('event_invitation.position');
     }
 
     public function photos(): HasMany

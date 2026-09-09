@@ -190,23 +190,30 @@ final class Melody
     public string $updated_at;
 }
 
-#[OA\Schema(schema: 'InvitationEvent', description: 'A ceremony/party event of an invitation.')]
+#[OA\Schema(schema: 'InvitationEvent', description: 'An event of an invitation timeline, picked from the event catalog.')]
 final class InvitationEvent
+{
+    #[OA\Property(example: 8)]
+    public int $id;
+
+    #[OA\Property(example: 'Exchange of Vows')]
+    public string $name;
+
+    #[OA\Property(description: 'Time in 24h format, chosen by the couple.', example: '10:00')]
+    public string $time;
+}
+
+#[OA\Schema(schema: 'Event', description: 'A catalog event type users can add to an invitation timeline.')]
+final class Event
 {
     #[OA\Property(example: 1)]
     public int $id;
 
-    #[OA\Property(example: 8)]
-    public int $invitation_id;
-
-    #[OA\Property(example: 'Wedding Ceremony')]
+    #[OA\Property(example: 'Exchange of Vows')]
     public string $name;
 
-    #[OA\Property(description: 'Time in 24h format.', example: '10:00')]
-    public string $time;
-
-    #[OA\Property(description: 'Zero-based ordering position.', example: 0)]
-    public int $position;
+    #[OA\Property(description: 'Catalog display position.', example: 2)]
+    public int $sort_order;
 }
 
 #[OA\Schema(schema: 'Photo', description: 'A photo uploaded to an invitation.')]
@@ -397,11 +404,11 @@ final class DeleteProfileRequest
     public ?string $password;
 }
 
-#[OA\Schema(schema: 'InvitationEventInput', description: 'One event entry of an invitation form.')]
+#[OA\Schema(schema: 'InvitationEventInput', description: 'One timeline entry of an invitation form.')]
 final class InvitationEventInput
 {
-    #[OA\Property(description: 'Event name.', type: 'string', maxLength: 255)]
-    public ?string $name;
+    #[OA\Property(description: 'Catalog event type id.', type: 'integer')]
+    public ?int $event_id;
 
     #[OA\Property(description: 'Event time.', type: 'string', example: '18:00')]
     public ?string $time;
@@ -441,7 +448,7 @@ final class InvitationCreateRequest
     public ?string $note;
 
     #[OA\Property(
-        description: 'Ordered event list (2 to 4 items).',
+        description: 'Ordered timeline of catalog event ids, each with a chosen time (2 to 4 items).',
         type: 'array',
         minItems: 2,
         maxItems: 4,
@@ -492,7 +499,7 @@ final class InvitationUpdateRequest
     public ?string $note;
 
     #[OA\Property(
-        description: 'Ordered event list (2 to 4 items).',
+        description: 'Ordered timeline of catalog event ids, each with a chosen time (2 to 4 items).',
         type: 'array',
         minItems: 2,
         maxItems: 4,

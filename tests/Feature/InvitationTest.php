@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Event;
 use App\Models\Invitation;
 use App\Models\Melody;
 use App\Models\Template;
@@ -19,6 +20,12 @@ class InvitationTest extends TestCase
 
     private Melody $melody;
 
+    private Event $eventCeremony;
+
+    private Event $eventReception;
+
+    private Event $eventParty;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,6 +42,10 @@ class InvitationTest extends TestCase
             'name' => 'Classic',
             'file_path' => 'melodies-assets/classic.mp3',
         ]);
+
+        $this->eventCeremony = Event::create(['name' => 'Ceremony', 'sort_order' => 0]);
+        $this->eventReception = Event::create(['name' => 'Reception', 'sort_order' => 1]);
+        $this->eventParty = Event::create(['name' => 'Party', 'sort_order' => 2]);
     }
 
     private function validPayload(array $overrides = []): array
@@ -51,8 +62,8 @@ class InvitationTest extends TestCase
             'contact_phone' => '555-0100',
             'note' => 'Dress code: formal',
             'events' => [
-                ['name' => 'Ceremony', 'time' => '16:00'],
-                ['name' => 'Reception', 'time' => '19:00'],
+                ['event_id' => $this->eventCeremony->id, 'time' => '16:00'],
+                ['event_id' => $this->eventReception->id, 'time' => '19:00'],
             ],
             'photos' => [],
         ], $overrides);
@@ -111,6 +122,24 @@ class InvitationTest extends TestCase
         $this->assertDatabaseHas('invitations', ['slug' => 'john-jane-2']);
     }
 
+    public function test_create_rejects_unknown_event_id(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(
+            route('invitations.store'),
+            $this->validPayload([
+                'events' => [
+                    ['event_id' => 999999, 'time' => '16:00'],
+                    ['event_id' => $this->eventReception->id, 'time' => '19:00'],
+                ],
+            ]),
+        );
+
+        $response->assertSessionHasErrors('events.0.event_id');
+        $this->assertDatabaseCount('event_invitation', 0);
+    }
+
     private function makeInvitation(User $user, array $overrides = []): Invitation
     {
         return Invitation::create(array_merge([
@@ -132,9 +161,9 @@ class InvitationTest extends TestCase
     {
         $user = User::factory()->create();
         $invitation = $this->makeInvitation($user);
-        $invitation->events()->createMany([
-            ['name' => 'Ceremony', 'time' => '16:00', 'position' => 0],
-            ['name' => 'Reception', 'time' => '19:00', 'position' => 1],
+        $invitation->events()->sync([
+            $this->eventCeremony->id => ['time' => '16:00', 'position' => 0],
+            $this->eventReception->id => ['time' => '19:00', 'position' => 1],
         ]);
 
         $response = $this->actingAs($user)->get(route('invitations.edit', $invitation));
@@ -143,6 +172,7 @@ class InvitationTest extends TestCase
         $response->assertInertia(fn ($page) => $page
             ->component('Invitations/Edit')
             ->has('melodies')
+            ->has('events', 3)
             ->where('invitation.id', $invitation->id)
             ->has('invitation.events', 2));
     }
@@ -151,9 +181,9 @@ class InvitationTest extends TestCase
     {
         $user = User::factory()->create();
         $invitation = $this->makeInvitation($user);
-        $invitation->events()->createMany([
-            ['name' => 'Ceremony', 'time' => '16:00', 'position' => 0],
-            ['name' => 'Reception', 'time' => '19:00', 'position' => 1],
+        $invitation->events()->sync([
+            $this->eventCeremony->id => ['time' => '16:00', 'position' => 0],
+            $this->eventReception->id => ['time' => '19:00', 'position' => 1],
         ]);
 
         $response = $this->actingAs($user)->put(
@@ -161,9 +191,9 @@ class InvitationTest extends TestCase
             $this->validPayload([
                 'groom_name' => 'Robert Wilson',
                 'events' => [
-                    ['name' => 'Drinks', 'time' => '15:00'],
-                    ['name' => 'Ceremony', 'time' => '16:30'],
-                    ['name' => 'Party', 'time' => '22:00'],
+                    ['event_id' => $this->eventReception->id, 'time' => '15:00'],
+                    ['event_id' => $this->eventCeremony->id, 'time' => '16:30'],
+                    ['event_id' => $this->eventParty->id, 'time' => '22:00'],
                 ],
             ]),
         );
@@ -177,7 +207,7 @@ class InvitationTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->assertDatabaseCount('events', 3);
+        $this->assertDatabaseCount('event_invitation', 3);
         $this->assertSame('Ceremony', $invitation->events()->get()[1]->name);
         $this->assertSame(2, $invitation->events()->max('position'));
     }

@@ -3,7 +3,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import Navbar from "@/Components/Navbar";
 import InvitationForm, { EMPTY_EVENT } from "@/Pages/Invitations/InvitationForm";
 
-export default function Create({ template, melodies = [] }) {
+export default function Create({ template, melodies = [], events = [] }) {
   const form = useForm({
     template_id: template.id,
     melody_id: "",
@@ -61,6 +61,7 @@ export default function Create({ template, melodies = [] }) {
               form={form}
               template={template}
               melodies={melodies}
+              events={events}
               submitLabel="Create Invitation"
               onSubmit={submit}
             />

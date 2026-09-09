@@ -23,14 +23,7 @@ const MAX_EVENTS = 4;
 const MIN_EVENTS = 2;
 const MAX_PHOTOS = 5;
 
-const EVENT_PLACEHOLDERS = [
-  "Wedding Ceremony",
-  "Wedding Reception",
-  "Dance Party",
-  "Cake Cutting",
-];
-
-export const EMPTY_EVENT = { name: "", time: "" };
+export const EMPTY_EVENT = { event_id: "", time: "" };
 
 function Field({ label, error, required, children }) {
   return (
@@ -49,6 +42,7 @@ export default function InvitationForm({
   form,
   template,
   melodies = [],
+  events = [],
   existingPhotos = [],
   submitLabel,
   onSubmit,
@@ -220,56 +214,89 @@ export default function InvitationForm({
       <Card>
         <CardHeader>
           <CardTitle>
-            Schedule <span className="text-destructive">*</span>
+            Timeline <span className="text-destructive">*</span>
           </CardTitle>
           <CardDescription>
-            {MIN_EVENTS} to {MAX_EVENTS} timeline points of the day shown on the
-            public invitation.
+            Pick {MIN_EVENTS} to {MAX_EVENTS} moments of your day. The order
+            shown below is the order displayed on the invitation, and you set a
+            clock time for each.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {form.data.events.map((event, index) => (
-            <div key={index} className="space-y-1.5">
-              <div className="flex items-start gap-2">
-                <div className="flex-1 space-y-1.5">
-                  <Input
-                    value={event.name}
-                    onChange={(e) => updateEvent(index, "name", e.target.value)}
-                    placeholder={EVENT_PLACEHOLDERS[index] ?? "Timeline point"}
-                  />
-                  {form.errors[`events.${index}.name`] && (
-                    <p className="text-sm text-destructive">
-                      {form.errors[`events.${index}.name`]}
-                    </p>
-                  )}
-                </div>
+          {form.data.events.map((event, index) => {
+            const selectedIds = form.data.events
+              .map((item) => item.event_id)
+              .filter(Boolean);
+            const available = events.filter(
+              (catalogEvent) =>
+                String(catalogEvent.id) === String(event.event_id) ||
+                !selectedIds.includes(String(catalogEvent.id)),
+            );
 
-                <div className="w-32 shrink-0 space-y-1.5">
-                  <Input
-                    type="time"
-                    value={event.time}
-                    onChange={(e) => updateEvent(index, "time", e.target.value)}
-                  />
-                  {form.errors[`events.${index}.time`] && (
-                    <p className="text-sm text-destructive">
-                      {form.errors[`events.${index}.time`]}
-                    </p>
-                  )}
-                </div>
+            return (
+              <div key={index} className="space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <div className="flex-1 space-y-1.5">
+                    <Select
+                      items={Object.fromEntries(
+                        available.map((catalogEvent) => [
+                          String(catalogEvent.id),
+                          catalogEvent.name,
+                        ]),
+                      )}
+                      value={event.event_id || null}
+                      onValueChange={(value) =>
+                        updateEvent(index, "event_id", value ?? "")
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose a moment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {available.map((catalogEvent) => (
+                          <SelectItem
+                            key={catalogEvent.id}
+                            value={String(catalogEvent.id)}
+                          >
+                            {catalogEvent.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {form.errors[`events.${index}.event_id`] && (
+                      <p className="text-sm text-destructive">
+                        {form.errors[`events.${index}.event_id`]}
+                      </p>
+                    )}
+                  </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  disabled={form.data.events.length <= MIN_EVENTS}
-                  onClick={() => removeEvent(index)}
-                  aria-label="Remove timeline point"
-                >
-                  <Trash2 />
-                </Button>
+                  <div className="w-32 shrink-0 space-y-1.5">
+                    <Input
+                      type="time"
+                      value={event.time}
+                      onChange={(e) => updateEvent(index, "time", e.target.value)}
+                    />
+                    {form.errors[`events.${index}.time`] && (
+                      <p className="text-sm text-destructive">
+                        {form.errors[`events.${index}.time`]}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    disabled={form.data.events.length <= MIN_EVENTS}
+                    onClick={() => removeEvent(index)}
+                    aria-label="Remove timeline moment"
+                  >
+                    <Trash2 />
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {form.errors.events && (
             <p className="text-sm text-destructive">{form.errors.events}</p>
@@ -281,7 +308,7 @@ export default function InvitationForm({
             disabled={form.data.events.length >= MAX_EVENTS}
             onClick={addEvent}
           >
-            <Plus /> Add timeline point
+            <Plus /> Add a moment
           </Button>
         </CardContent>
       </Card>

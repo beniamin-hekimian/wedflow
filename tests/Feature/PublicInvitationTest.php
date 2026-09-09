@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Event;
 use App\Models\Invitation;
 use App\Models\Melody;
 use App\Models\Template;
@@ -19,6 +20,10 @@ class PublicInvitationTest extends TestCase
 
     private Melody $melody;
 
+    private Event $eventCeremony;
+
+    private Event $eventReception;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,6 +40,9 @@ class PublicInvitationTest extends TestCase
             'name' => 'Classic',
             'file_path' => 'melodies-assets/classic.mp3',
         ]);
+
+        $this->eventCeremony = Event::create(['name' => 'Ceremony', 'sort_order' => 0]);
+        $this->eventReception = Event::create(['name' => 'Reception', 'sort_order' => 1]);
     }
 
     private function invitation(User $user, array $overrides = []): Invitation
@@ -54,9 +62,9 @@ class PublicInvitationTest extends TestCase
             'status' => 'pending',
         ], $overrides));
 
-        $invitation->events()->createMany([
-            ['name' => 'Ceremony', 'time' => '16:00', 'position' => 0],
-            ['name' => 'Reception', 'time' => '19:00', 'position' => 1],
+        $invitation->events()->sync([
+            $this->eventCeremony->id => ['time' => '16:00', 'position' => 0],
+            $this->eventReception->id => ['time' => '19:00', 'position' => 1],
         ]);
 
         return $invitation;

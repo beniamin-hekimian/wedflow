@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Invitation;
 use App\Models\Melody;
 use App\Models\Photo;
@@ -37,6 +38,7 @@ class InvitationController extends Controller
         return Inertia::render('Invitations/Create', [
             'template' => $template,
             'melodies' => Melody::all(),
+            'events' => Event::orderBy('sort_order')->get(),
         ]);
     }
 
@@ -57,14 +59,12 @@ class InvitationController extends Controller
 
                 $events = collect($validated['events'])
                     ->values()
-                    ->map(fn ($event, $index) => [
-                        'name' => $event['name'],
-                        'time' => $event['time'],
-                        'position' => $index,
+                    ->mapWithKeys(fn ($event, $index) => [
+                        $event['event_id'] => ['time' => $event['time'], 'position' => $index],
                     ])
                     ->all();
 
-                $invitation->events()->createMany($events);
+                $invitation->events()->sync($events);
 
                 $photos = [];
 
@@ -95,9 +95,10 @@ class InvitationController extends Controller
         $this->authorizeOwnership($invitation);
 
         return Inertia::render('Invitations/Edit', [
-            'invitation' => $invitation->load(['template', 'melody', 'events', 'photos']),
+            'invitation' => $this->editInvitationPayload($invitation),
             'template' => $invitation->template,
             'melodies' => Melody::all(),
+            'events' => Event::orderBy('sort_order')->get(),
         ]);
     }
 
@@ -113,14 +114,11 @@ class InvitationController extends Controller
             DB::transaction(function () use ($validated, $request, $invitation, &$photoPaths) {
                 $invitation->forceFill($this->editableFields($validated))->save();
 
-                $invitation->events()->delete();
-                $invitation->events()->createMany(
+                $invitation->events()->sync(
                     collect($validated['events'])
                         ->values()
-                        ->map(fn ($event, $index) => [
-                            'name' => $event['name'],
-                            'time' => $event['time'],
-                            'position' => $index,
+                        ->mapWithKeys(fn ($event, $index) => [
+                            $event['event_id'] => ['time' => $event['time'], 'position' => $index],
                         ])
                         ->all(),
                 );
@@ -212,6 +210,19 @@ class InvitationController extends Controller
         abort_unless($invitation->user_id === Auth::id(), 403);
     }
 
+    private function editInvitationPayload(Invitation $invitation): Invitation
+    {
+        $invitation->load(['template', 'melody', 'events', 'photos']);
+
+        $invitation->setRelation('events', $invitation->events->map(fn ($event) => [
+            'id' => $event->id,
+            'name' => $event->name,
+            'time' => $event->pivot->time,
+        ]));
+
+        return $invitation;
+    }
+
     private function rules(): array
     {
         return [
@@ -226,7 +237,7 @@ class InvitationController extends Controller
             'contact_phone' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string'],
             'events' => ['required', 'array', 'min:2', 'max:4'],
-            'events.*.name' => ['required', 'string', 'max:255'],
+            'events.*.event_id' => ['required', 'integer', 'exists:events,id'],
             'events.*.time' => ['required', 'date_format:H:i'],
             'existing_photo_ids' => ['nullable', 'array'],
             'existing_photo_ids.*' => ['integer'],

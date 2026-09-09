@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TemplateSeeder::class,
             MelodySeeder::class,
+            EventSeeder::class,
             AdminUserSeeder::class,
         ]);
     }
