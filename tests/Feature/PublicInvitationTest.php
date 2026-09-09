@@ -87,6 +87,47 @@ class PublicInvitationTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_owner_can_preview_their_pending_invitation(): void
+    {
+        $user = User::factory()->create();
+        $invitation = $this->invitation($user, ['status' => 'pending']);
+
+        $this->actingAs($user)
+            ->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Classic')
+                ->where('invitation.slug', $invitation->slug)
+                ->where('invitation.status', 'pending')
+                ->where('preview', true));
+    }
+
+    public function test_owner_can_preview_their_inactive_invitation(): void
+    {
+        $user = User::factory()->create();
+        $invitation = $this->invitation($user, ['status' => 'inactive']);
+
+        $this->actingAs($user)
+            ->get(route('invitations.show', $invitation->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Public/Templates/Classic')
+                ->where('invitation.slug', $invitation->slug)
+                ->where('invitation.status', 'inactive')
+                ->where('preview', true));
+    }
+
+    public function test_non_owner_cannot_view_pending_invitation(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $invitation = $this->invitation($owner, ['status' => 'pending']);
+
+        $this->actingAs($other)
+            ->get(route('invitations.show', $invitation->slug))
+            ->assertNotFound();
+    }
+
     public function test_inactive_invitation_is_not_publicly_visible(): void
     {
         $user = User::factory()->create();

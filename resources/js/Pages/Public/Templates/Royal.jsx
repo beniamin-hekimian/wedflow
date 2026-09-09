@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapPin, Music, Pause } from "lucide-react";
 
 import RsvpCard from "../Components/RsvpCard";
+import PreviewBanner from "../Components/PreviewBanner";
 import "../../../../css/invitations/royal.css";
 
 const INTRO_FADE_MS = 1200;
@@ -230,7 +231,7 @@ const formatTime = (value) => {
   return `${display}:${minute} ${suffix}`;
 };
 
-export default function Royal({ invitation, wishes = [] }) {
+export default function Royal({ invitation, wishes = [], preview = false }) {
   const { template, melody, events = [], photos = [] } = invitation;
 
   const introSrc = template?.intro_video_path ? `/${template.intro_video_path}` : null;
@@ -306,6 +307,8 @@ export default function Royal({ invitation, wishes = [] }) {
           href="https://fonts.bunny.net/css?family=cinzel:400,500,600,700&family=cormorant-garamond:400,500,600&family=great-vibes:400&display=swap"
         />
       </Head>
+
+      <PreviewBanner preview={preview} status={invitation.status} />
 
       {melodySrc && (
         <audio ref={audioRef} src={melodySrc} loop preload="auto" />
@@ -476,9 +479,11 @@ export default function Royal({ invitation, wishes = [] }) {
             </Reveal>
           )}
 
-          <Reveal>
-            <RsvpCard invitation={invitation} wishes={wishes} />
-          </Reveal>
+          {!preview && (
+            <Reveal>
+              <RsvpCard invitation={invitation} wishes={wishes} />
+            </Reveal>
+          )}
 
           <Reveal>
             <footer className="footer">

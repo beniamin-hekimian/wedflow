@@ -16,6 +16,7 @@ class PublicInvitationController extends Controller
         return Inertia::render($component, [
             'invitation' => $invitation,
             'wishes' => $this->visibleWishes($invitation),
+            'preview' => $this->isPreview($invitation),
         ]);
     }
 
@@ -26,6 +27,7 @@ class PublicInvitationController extends Controller
         return Inertia::render($component, array_merge([
             'invitation' => $invitation,
             'wishes' => $this->visibleWishes($invitation),
+            'preview' => $this->isPreview($invitation),
         ], $extra));
     }
 
@@ -38,7 +40,13 @@ class PublicInvitationController extends Controller
             'photos' => fn ($query) => $query->orderBy('position'),
         ])
             ->where('slug', $slug)
-            ->where('status', 'active')
+            ->where(function ($query) {
+                $query->where('status', 'active');
+
+                if ($userId = auth()->id()) {
+                    $query->orWhere('user_id', $userId);
+                }
+            })
             ->firstOrFail();
 
         $component = 'Public/Templates/' . Str::studly($invitation->template->slug);
@@ -48,6 +56,11 @@ class PublicInvitationController extends Controller
         }
 
         return [$component, $invitation];
+    }
+
+    private function isPreview(Invitation $invitation): bool
+    {
+        return $invitation->status !== 'active';
     }
 
     private function visibleWishes(Invitation $invitation)

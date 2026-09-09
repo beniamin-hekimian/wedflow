@@ -245,7 +245,7 @@ export default function Home({ templates = [] }) {
                 </p>
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                   {user ? (
-                    <Link href={route("invitations.create")}>
+                    <Link href={route("templates.index")}>
                       <Button
                         size="lg"
                         className="bg-wax-gold text-white hover:bg-wax-goldDeep"
