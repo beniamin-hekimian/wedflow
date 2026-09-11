@@ -1,58 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💍 Wedflow
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📚 Overview
 
-## About Laravel
+Wedflow is a digital wedding invitation platform where couples design personalized e-invites, share them as a beautiful link, and track RSVPs in real time. Guests view a cinematic page with a live countdown, background music, photo gallery and event timeline and respond with their attendance and a personal wish.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🖼️ Screenshot
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+![Wedflow screenshot](./public/mockup.png)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Features
 
-## Learning Laravel
+- 🗂️ **Invitation templates** - each with a thumbnail and cinematic intro video
+- 💌 **Unique shareable link** - each invitation gets its own `/slug` URL
+- ✅ **RSVP & wishes** - guests confirm attendance and leave wishes on a public wall
+- 🛠️ **Admin panel** - manage invitations, users, templates, etc...
+- 📘 **OpenAPI docs** - full Swagger 3.0 spec generated with l5-swagger
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🧰 Tech Stack
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Frontend**
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- ⚛️ React 18 (Inertia.js)
+- ✨ Vite 8 (build tool)
+- 🎨 Tailwind CSS 3 (styles)
+- 🧩 shadcn/ui (components)
 
-## Agentic Development
+**Backend**
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- 🐘 PHP 8.3 (language)
+- 🟨 Laravel 13 (framework)
+- 🗄️ Eloquent ORM (SQLite by default)
+- 🔐 Laravel Breeze (session auth)
 
-```bash
-composer require laravel/boost --dev
+## 👥 User Roles
 
-php artisan boost:install
+Wedflow allows authenticated users to perform actions based on their role:
+
+1. 🛠️ **Admins**
+
+   - Monitor platform stats & top invitations on the dashboard
+   - Approve invitations (**pending → active → inactive**)
+   - Manage users, template, melody and event catalogs
+   - Review all guests responses, searchable & filterable by attendance
+
+2. 💑 **Customers**
+
+   - Browse templates and start a new invitation
+   - Create, edit and delete their own invitations
+   - Share the unique link and preview before approval
+   - View RSVP stats and moderate wishes (show/hide)
+
+## 🗂️ Project Structure
+
+```
+app/
+├── Http/            # Controllers & Middleware
+├── Models/          # Eloquent models
+└── Swagger/         # OpenAPI annotations
+
+resources/
+├── js/Pages/        # React/Inertia pages
+├── js/Components/   # Shared + shadcn/ui components
+├── css/             # Global + per-template styles
+└── views/           # Root Inertia Blade page
+
+routes/              # web.php & auth.php
+database/            # Migrations + seeders
+tests/Feature/       # Feature test suite
+config/              # Config files
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## 📘 Swagger & Docs
 
-## Contributing
+- 📘 **l5-swagger** - OpenAPI 3.0 spec at `/api/documentation`
+- 🧪 `php artisan test` - full feature test suite
+- 📘 `composer run docs` → open `/api/documentation`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## What I Learned 📚
 
-## Code of Conduct
+My first Laravel project! Here's what I picked up:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1️⃣ **Admin Dashboard Reports** - built stats & summarized RSVP metrics for the admin panel
 
-## Security Vulnerabilities
+2️⃣ **Breeze + React + Inertia** - SPA-style workflow with Ziggy typed route helpers
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3️⃣ **Swagger** - OpenAPI 3.0 specs with l5-swagger, docs at `/api/documentation`
 
-## License
+4️⃣ **MVC Pattern** - Models, Controllers & presentation separated with Laravel conventions
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Conclusion 🎉
+
+Developed by **Beniamin Hekimian** as part of the **Computer Science (Laravel)** training at **ADISC**.
